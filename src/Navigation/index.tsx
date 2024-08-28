@@ -15,6 +15,7 @@ import MainTab from './MainTab';
 import Payment from '../Container/Payment';
 import ForgotPassword from '../Container/ForgotPassword';
 import PdfScreen from '../Container/PdfScreen';
+import OnBoard from '../Container/OnBoard';
 
 
 const Stack = createStackNavigator();
@@ -22,7 +23,8 @@ const Stack = createStackNavigator();
 function Navigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={ROUTES.FirstScreen}>
+      <Stack.Navigator initialRouteName={ROUTES.OnBoard}>
+      <Stack.Screen name={ROUTES.OnBoard} component={OnBoard} options={{headerShown:false}}/>
       <Stack.Screen name={ROUTES.FirstScreen} component={FirstScreen} options={{headerShown:false}}/>
         <Stack.Screen name={ROUTES.Login} component={Login} options={{ headerShown: false}} />
         <Stack.Screen name={ROUTES.MainTab} component={MainTab} options={{headerShown:false}}/> 

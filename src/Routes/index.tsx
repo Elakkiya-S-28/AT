@@ -13,5 +13,6 @@ export const ROUTES = {
    MainTab:'MainTab',
    Payment:'Payment',
    PdfScreen:'PdfScreen',
+   OnBoard:'OnBoard',
     
 }

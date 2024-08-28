@@ -7,6 +7,8 @@ import { ROUTES } from '../../Routes';
 import ICONS from '../../Images/Icon';
 import axios from 'axios';
 import IMAGES from '../../Images/Image';
+import { API_URL } from '../../config/API';
+import { COLORS } from '../../config/COLORS';
 
 const LoginMainScreen = () => {
   const navigation = useNavigation();
@@ -49,7 +51,7 @@ const LoginMainScreen = () => {
     }
   
     try {
-      const response = await axios.post('http://3.82.35.124:3001/user/login', {
+      const response = await axios.post(API_URL + 'user/login', {
         email: email,
         password: trimmedPassword,
         role: "BUYER" // Adjust as per your backend requirements
@@ -122,9 +124,9 @@ const LoginMainScreen = () => {
           <CustomButton
             title="Login"
             onPress={handleLogin}
-            bgColor="#1679AB"
+            bgColor={COLORS.DarkBlue}
             textColor="#FFFFFF"
-            borderColor="#1679AB"
+            borderColor={COLORS.DarkBlue}
           />
 
           <TouchableOpacity onPress={() => navigation.navigate(ROUTES.ForgotPassword)}>

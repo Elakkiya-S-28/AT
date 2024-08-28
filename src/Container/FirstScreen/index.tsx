@@ -1,29 +1,33 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import { useNavigation } from '@react-navigation/core';
 import { ROUTES } from '../../Routes';
 import IMAGES from '../../Images/Image';
+import { COLORS } from '../../config/COLORS';
 
-const StartingPage = () => {
+const FirstScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <View style={styles.middleSection}>
-       <Image source={IMAGES.image} style={{height:'100%'}}/>
-      
+      <View style={styles.topSection}>
+        <Image source={IMAGES.mainimg} style={styles.topImage} />
       </View>
+
+      <View style={styles.middleSection}>
+        <Image source={IMAGES.MainImage} style={styles.middleImage} />
+      </View>
+
       <View style={styles.bottomSection}>
-      
-        <Image
-          source={IMAGES.MainImage}
-          style={styles.logo}
-        />
-   
-      
         <Text style={styles.companyName}>ASHOK TEXTILES</Text>
         <Text style={styles.subtitle}>(SARANYA SPINNING MILLS PVT LTD)</Text>
-        <CustomButton title={'Get Started'} onPress={() => navigation.navigate(ROUTES.LoginMainScreen)} bgColor={'#1679AB'} textColor={'white'} borderColor={'#1679AB'} />
+        <CustomButton 
+          title={'Get Started'} 
+          onPress={() => navigation.navigate(ROUTES.LoginMainScreen)} 
+          bgColor={COLORS.DarkBlue}
+          textColor={'white'} 
+          borderColor={COLORS.DarkBlue}
+        />
       </View>
     </View>
   );
@@ -32,41 +36,32 @@ const StartingPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   topSection: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
   },
-  title: {
-    fontSize: 18,
-    color: '#757575',
-    marginTop: 50,
+  topImage: {
+    height: 350,
+    width: '100%',
   },
   middleSection: {
-    flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#FF7F7F',
-    zIndex: 1,
+    flex: 1, // Added flex to take up equal space
   },
-  logo: {
-    width: 150,
+  middleImage: {
     height: 150,
-    // position:'relative',
-    // top:200,
-    // marginTop: 50,
-   
+    width: 150,
+    resizeMode: 'cover',
   },
   bottomSection: {
     flex: 1,
     // justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    // zIndex: 1,
-    margin: 16,
+    marginHorizontal: 16,
+    marginVertical:25
   },
   companyName: {
     fontSize: 24,
@@ -80,16 +75,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
   },
-  button: {
-    backgroundColor: '#00695c',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-  },
 });
 
-export default StartingPage;
+export default FirstScreen;
