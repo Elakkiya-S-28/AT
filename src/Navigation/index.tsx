@@ -16,6 +16,8 @@ import Payment from '../Container/Payment';
 import ForgotPassword from '../Container/ForgotPassword';
 import PdfScreen from '../Container/PdfScreen';
 import OnBoard from '../Container/OnBoard';
+import OTPInput from '../Container/OTP';
+import { ForgotEmail } from '../Container/ForgotEmail';
 
 
 const Stack = createStackNavigator();
@@ -25,6 +27,8 @@ function Navigation() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName={ROUTES.OnBoard}>
       <Stack.Screen name={ROUTES.OnBoard} component={OnBoard} options={{headerShown:false}}/>
+      <Stack.Screen name={ROUTES.ForgotEmail} component={ForgotEmail} options={{headerShown:false}}/>
+      <Stack.Screen name={ROUTES.OTPInput} component={OTPInput} options={{headerShown:false}}/>
       <Stack.Screen name={ROUTES.FirstScreen} component={FirstScreen} options={{headerShown:false}}/>
         <Stack.Screen name={ROUTES.Login} component={Login} options={{ headerShown: false}} />
         <Stack.Screen name={ROUTES.MainTab} component={MainTab} options={{headerShown:false}}/> 

@@ -240,6 +240,8 @@ import ICONS from '../../Images/Icon';
 import { ROUTES } from '../../Routes';
 import { useRoute, useNavigation } from '@react-navigation/core';
 import axios from 'axios';
+import { API_URL } from '../../config/API';
+import { COLORS } from '../../config/COLORS';
 
 const Yarn = () => {
   const route = useRoute();
@@ -281,7 +283,7 @@ const Yarn = () => {
 
     try {
       const response = await axios.post(
-        'http://3.82.35.124:3001/order/addOrder',
+        API_URL+'/order/addOrder',
         orderData,
         {
           headers: {
@@ -459,7 +461,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   addButton: {
-    backgroundColor: '#FF4D4D',
+    // backgroundColor: '#FF4D4D',
+    backgroundColor:COLORS.DarkBlue,
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,

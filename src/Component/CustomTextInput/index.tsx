@@ -1,6 +1,4 @@
-// CustomTextInput.js
-
-import React, { useState } from 'react';
+import React from 'react';
 import { View, TextInput, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import ICONS from '../../Images/Icon';
 
@@ -16,12 +14,14 @@ const CustomTextInput = ({
   onChangeText,
   style,
   toggleSecureEntry,
-  showPassword
+  showPassword,
+  borderColor = '#ccc', 
+  onSubmit, // New prop for submit action
 }) => {
   return (
     <View style={styles.inputContainer}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={styles.inputWrapper}>
+      <View style={[styles.inputWrapper, { borderColor }]}>
         <TextInput
           style={[styles.textInput, style]}
           placeholder={placeholder}
@@ -30,6 +30,8 @@ const CustomTextInput = ({
           secureTextEntry={secureTextEntry && !showPassword}
           value={value}
           onChangeText={onChangeText}
+          onSubmitEditing={onSubmit} // Trigger the function on submit
+          returnKeyType="done" // Show 'done' button on the keyboard
         />
         {isPasswordField && (
           <TouchableOpacity onPress={toggleSecureEntry} style={styles.eyeIconContainer}>
@@ -48,7 +50,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: '100%',
     marginVertical: 10,
-   
   },
   label: {
     color: 'black',
@@ -58,7 +59,6 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 10,
     backgroundColor: 'white',

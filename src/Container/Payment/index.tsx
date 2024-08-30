@@ -209,6 +209,7 @@ import ICONS from '../../Images/Icon';
 import { useNavigation, useRoute } from '@react-navigation/core';
 import axios from 'axios';
 import { ROUTES } from '../../Routes';
+import { API_URL } from '../../config/API';
 
 const Payment = () => {
   const navigation = useNavigation();
@@ -276,7 +277,7 @@ const Payment = () => {
 
     try {
       const response = await axios.post(
-        'http://3.82.35.124:3001/report',
+        API_URL+'/report',
         reportData,
         {
           headers: {

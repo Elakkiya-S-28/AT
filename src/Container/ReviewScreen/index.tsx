@@ -282,17 +282,19 @@ import ICONS from '../../Images/Icon';
 import { ROUTES } from '../../Routes';
 import { useRoute } from '@react-navigation/core';
 import axios from 'axios';
+import { API_URL } from '../../config/API';
+import { COLORS } from '../../config/COLORS';
 
 const ReviewScreen = ({ navigation }) => {
   const route = useRoute();
   const { token, email, cartItems,category } = route.params;
   const [orderDetails, setOrderDetails] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  console.log(category,"Category", email)
+  console.log(category,"Category", email, token)
   const fetchAddOrder = async () => {
     try {
       const response = await axios.post(
-        'http://3.82.35.124:3001/order/addOrder',
+        API_URL+'/order/addOrder',
         {
           user: { email, role: 'BUYER' },
           products: cartItems,
@@ -305,17 +307,20 @@ const ReviewScreen = ({ navigation }) => {
           },
         }
       );
-      console.log('Order Response:', response);
+      console.log('Order Response:', response.data);
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
   };
-
+  console.log(email,"EMILL", token)
   const fetchOrderDetails = async () => {
     try {
+      const payload = { status: 'IN-CART', email: email };
+      console.log("Payload:", payload); // Log the payload being sent
+  
       const response = await axios.post(
-        'http://3.82.35.124:3001/user/getOrderDetails',
-        { status: 'IN-CART', email },
+        API_URL + '/user/getOrderDetails',
+        payload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -323,6 +328,7 @@ const ReviewScreen = ({ navigation }) => {
           },
         }
       );
+  
       console.log(response.data.message, "Fetched Orders");
       setOrderDetails(response.data.message);
     } catch (error) {
@@ -337,7 +343,7 @@ const ReviewScreen = ({ navigation }) => {
 
   const handleDelete = async (orderId) => {
     try {
-      await axios.delete(`http://3.82.35.124:3001/order/deleteOrders?id=${orderId}`, {
+      await axios.delete(API_URL + `/order/deleteOrders?id=${orderId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrderDetails();
@@ -560,7 +566,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   checkoutButton: {
-    backgroundColor: '#1679AB',
+    backgroundColor:COLORS.DarkBlue,
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -604,7 +610,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     marginHorizontal: 10,
-    backgroundColor: '#1679AB',
+    backgroundColor:COLORS.DarkBlue,
     borderRadius: 5,
     alignItems: 'center',
   },

@@ -5,9 +5,11 @@ import CustomTextInput from '../../Component/CustomTextInput'; // Import the Cus
 import { useNavigation } from '@react-navigation/core';
 import { ROUTES } from '../../Routes';
 import ICONS from '../../Images/Icon';
+import { COLORS } from '../../config/COLORS';
 
 const ForgotPassword = () => {
     const navigation = useNavigation();
+    
   return (
     <View style={styles.container}>
       <View  style={{flexDirection:'row'}}>
@@ -46,9 +48,9 @@ const ForgotPassword = () => {
       <CustomButton
         title="Forgot Password"
         onPress={() => navigation.navigate(ROUTES.LoginMainScreen)}
-        bgColor="#1679AB"
+        bgColor={COLORS.DarkBlue}
         textColor="white"
-        borderColor="#1679AB"
+        borderColor={COLORS.DarkBlue}
       />
       
     </View>

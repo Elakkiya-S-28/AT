@@ -5,6 +5,7 @@ import ProfileTextInput from '../../Component/ProfileTextInput';
 import CustomButton from '../../Component/CustomButton';
 import { useNavigation } from '@react-navigation/core';
 import { ROUTES } from '../../Routes';
+import { COLORS } from '../../config/COLORS';
 
 const Settings = () => {
   const [name, setName] = useState('Elakkiya S');
@@ -50,7 +51,7 @@ const Settings = () => {
           value={phoneNumber}
           onChangeText={setPhoneNumber} secureTextEntry={false}
         />
-        <CustomButton title={"Logout"} onPress={() => navigation.navigate(ROUTES.FirstScreen)} bgColor={"#1679AB"} textColor={"white"} borderColor={"#1679AB"} />
+        <CustomButton title={"Logout"} onPress={() => navigation.navigate(ROUTES.FirstScreen)} bgColor={COLORS.DarkBlue} textColor={"white"} borderColor={COLORS.DarkBlue} />
       </View>
       {/* Add more inputs as needed */}
     </View>

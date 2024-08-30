@@ -184,6 +184,7 @@ import ICONS from '../../Images/Icon';
 import { useNavigation, useRoute } from '@react-navigation/core';
 import { ROUTES } from '../../Routes';
 import { useTimer } from '../../Context/TimerContext'; 
+import { COLORS } from '../../config/COLORS';
 
 const Checkout = () => {
   const navigation = useNavigation();
@@ -337,7 +338,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   timeContainer: {
-    backgroundColor: '#1679AB',
+    backgroundColor: COLORS.DarkBlue,
     borderRadius: 5,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -349,7 +350,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   payButton: {
-    backgroundColor: '#1679AB',
+    backgroundColor: COLORS.DarkBlue,
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',

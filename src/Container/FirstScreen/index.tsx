@@ -14,11 +14,12 @@ const FirstScreen = () => {
         <Image source={IMAGES.mainimg} style={styles.topImage} />
       </View>
 
-      <View style={styles.middleSection}>
-        <Image source={IMAGES.MainImage} style={styles.middleImage} />
-      </View>
+      {/* <View style={styles.middleSection}>
+     
+      </View> */}
 
       <View style={styles.bottomSection}>
+      <Image source={IMAGES.ATImage} style={styles.middleImage} />
         <Text style={styles.companyName}>ASHOK TEXTILES</Text>
         <Text style={styles.subtitle}>(SARANYA SPINNING MILLS PVT LTD)</Text>
         <CustomButton 
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topSection: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -52,8 +53,8 @@ const styles = StyleSheet.create({
     flex: 1, // Added flex to take up equal space
   },
   middleImage: {
-    height: 150,
-    width: 150,
+    height: 130,
+    width: 130,
     resizeMode: 'cover',
   },
   bottomSection: {
@@ -68,11 +69,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'black',
+    marginTop:34,
   },
   subtitle: {
     fontSize: 14,
     color: '#757575',
-    marginTop: 10,
+    // marginTop: 10,
     marginBottom: 20,
   },
 });

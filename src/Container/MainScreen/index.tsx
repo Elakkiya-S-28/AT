@@ -5,6 +5,8 @@ import { ROUTES } from '../../Routes';
 import { useRoute } from '@react-navigation/core';
 import axios from 'axios';
 import ICONS from '../../Images/Icon';
+import { API_URL } from '../../config/API';
+import { COLORS } from '../../config/COLORS';
 
 const categories = [
   { id: '1', title: ROUTES.Fabric, image: IMAGES.fabric, category: 'fabric' },
@@ -52,7 +54,7 @@ const MainScreen = ({ navigation }) => {
   const fetchCategory = async (category) => {
     try {
       const response = await axios.post(
-        'http://3.82.35.124:3001/user/getCategory',
+        API_URL + '/user/getCategory',
         { category },
         {
           headers: {
@@ -62,8 +64,10 @@ const MainScreen = ({ navigation }) => {
         }
       );
       console.log(response.data.message, "Response from mainscreen");
-      setProduct(response.data.message);
-  
+      setProduct(response.data.message); 
+      if (response.data.message === 'The selected category has no product to show'){
+        Alert.alert(" The selected category has no product to show ")
+    }
       if (response.data.message.length > 0) {
         const firstProduct = response.data.message[0]; 
         if (firstProduct.category === 'yarn') {
@@ -71,6 +75,10 @@ const MainScreen = ({ navigation }) => {
         } else if (firstProduct.category === 'fabric') {
           navigation.navigate(ROUTES.Fabric, { token, email, product: response.data.message });
         }
+      }
+     
+      else{
+        return false
       }
       
   
@@ -230,7 +238,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#CCC',
   },
   modalButtonConfirm: {
-    backgroundColor: '#1679AB',
+    backgroundColor: COLORS.DarkBlue,
   },
   modalButtonText: {
     color: 'black',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Modal } from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import CustomTextInput from '../../Component/CustomTextInput';
 import Checkbox from '../../Component/CustomCheckBox';
@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/core';
 import { ROUTES } from '../../Routes';
 import ICONS from '../../Images/Icon';
 import axios from 'axios';
+import { API_URL } from '../../config/API';
+import { COLORS } from '../../config/COLORS';
 
 const SignUp = () => {
   const navigation = useNavigation();
@@ -20,6 +22,8 @@ const SignUp = () => {
   const [address, setAddress] = useState('');
   const [role, setRole] = useState('BUYER');
   const [errors, setErrors] = useState({});
+  const [buttonClicked, setButtonClicked] = useState(false); // New state for button click
+  const [visible, setVisible] = useState(false);
 
   const validate = () => {
     const newErrors = {};
@@ -33,13 +37,14 @@ const SignUp = () => {
     if (!role) newErrors.role = 'Role is required';
     if (!password.trim()) newErrors.password = 'Password is required';
     else if (password.trim().length < 6) newErrors.password = 'Password must be at least 6 characters long';
-    else if (password.trim() !== password) newErrors.password = 'Password cannot contain only spaces';
+    else if (password.trim() === '') newErrors.password = 'Password cannot contain only spaces';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSignUp = async () => {
+    setButtonClicked(true); // Indicate that the button was clicked
     if (!validate()) return;
 
     const signUpData = {
@@ -47,19 +52,28 @@ const SignUp = () => {
       email: email.trim(),
       hashPassword: password.trim(),
       role: role,
-      mobile: mobileNumber,
+      mobile: Number(mobileNumber),
       address: address.trim(),
       panNo: pan.trim(),
       gstNo: gst.trim(),
     };
-
+    console.log(signUpData, "SIGNUPDATA");
     try {
-      const response = await axios.post('http://3.82.35.124:3001/user/signup', signUpData);
+      const response = await axios.post(API_URL + '/user/signup', signUpData);
       console.log('Response:', response.data);
-      navigation.navigate(ROUTES.LoginMainScreen); // Navigate to success screen
+      setVisible(true); // Show success modal
     } catch (error) {
+      console.log("Error in signup", error.response);
       console.error('Signup Error:', error.response ? error.response.data : error.message);
     }
+  };
+
+  const getBorderColor = (field) => {
+    if (buttonClicked) { // Check if the button has been clicked
+      if (errors[field]) return 'red';
+      if (!errors[field] && !field) return 'green';
+    }
+    return '#ccc'; // Default border color
   };
 
   return (
@@ -84,8 +98,11 @@ const SignUp = () => {
             secureTextEntry={false}
             value={name}
             onChangeText={setName}
+            onsubmit={!!errors.name}
+            borderColor={getBorderColor('name')}
+            validate={!!errors.name}
+            validationMessage={errors.name}
           />
-          {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
 
           <CustomTextInput
             label="Mobile Number"
@@ -94,8 +111,10 @@ const SignUp = () => {
             secureTextEntry={false}
             value={mobileNumber}
             onChangeText={setMobileNumber}
+            borderColor={getBorderColor('mobileNumber')}
+            validate={!!errors.mobileNumber}
+            validationMessage={errors.mobileNumber}
           />
-          {errors.mobileNumber && <Text style={styles.errorText}>{errors.mobileNumber}</Text>}
 
           <CustomTextInput
             label="Email ID"
@@ -104,8 +123,10 @@ const SignUp = () => {
             secureTextEntry={false}
             value={email}
             onChangeText={setEmail}
+            borderColor={getBorderColor('email')}
+            validate={!!errors.email}
+            validationMessage={errors.email}
           />
-          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
           <CustomTextInput
             label="GST"
@@ -114,6 +135,9 @@ const SignUp = () => {
             secureTextEntry={false}
             value={gst}
             onChangeText={setGst}
+            borderColor={getBorderColor('gst')}
+            validate={!!errors.gst}
+            validationMessage={errors.gst}
           />
 
           <CustomTextInput
@@ -123,6 +147,9 @@ const SignUp = () => {
             secureTextEntry={false}
             value={pan}
             onChangeText={setPan}
+            borderColor={getBorderColor('pan')}
+            validate={!!errors.pan}
+            validationMessage={errors.pan}
           />
 
           <CustomTextInput
@@ -135,8 +162,10 @@ const SignUp = () => {
             isPasswordField={true}
             toggleSecureEntry={() => setShowPassword(!showPassword)}
             showPassword={showPassword}
+            borderColor={getBorderColor('password')}
+            validate={!!errors.password}
+            validationMessage={errors.password}
           />
-          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
           <CustomTextInput
             label="Address"
@@ -145,8 +174,10 @@ const SignUp = () => {
             secureTextEntry={false}
             value={address}
             onChangeText={setAddress}
+            borderColor={getBorderColor('address')}
+            validate={!!errors.address}
+            validationMessage={errors.address}
           />
-          {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
 
           <Text style={{ color: 'black' }}>Role</Text>
           <View style={styles.checkboxRow}>
@@ -166,9 +197,9 @@ const SignUp = () => {
           <CustomButton
             title="Register"
             onPress={handleSignUp}
-            bgColor="#1679AB"
+            bgColor={COLORS.DarkBlue}
             textColor="#FFFFFF"
-            borderColor="#1679AB"
+            borderColor={COLORS.DarkBlue}
           />
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account?</Text>
@@ -178,6 +209,24 @@ const SignUp = () => {
           </View>
         </View>
       </ScrollView>
+
+      <Modal transparent={true} visible={visible}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Success</Text>
+            <Text style={styles.modalMessage}>Registration successful!</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setVisible(false);
+                navigation.navigate(ROUTES.LoginMainScreen);
+              }}
+            >
+              <Text style={styles.buttonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -200,33 +249,66 @@ const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 20,
     textAlign: 'center',
-    fontWeight: 'bold'
   },
   titleAshok: {
-    color: '#1679AB',
+    fontWeight: 'bold',
   },
   checkboxRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-around',
-    marginBottom: 20,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 50,
-  },
-  footerText: {
-    color: '#333',
-  },
-  registerText: {
-    color: 'green',
-    fontWeight: 'bold',
+    marginBottom: 10,
   },
   errorText: {
     color: 'red',
-    fontSize: 12,
     marginBottom: 10,
+  },
+  footer: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  footerText: {
+    color: '#333',
+    marginRight: 5,
+  },
+  registerText: {
+    color: '#1679AB',
+    fontWeight: 'bold',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color:'black'
+  },
+  modalMessage: {
+    fontSize: 16,
+     color:'black',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor:COLORS.DarkBlue,
+    padding: 10,
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

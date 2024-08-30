@@ -36,6 +36,7 @@ const LoginMainScreen = () => {
     }
   
     const trimmedPassword = password.trim();
+    console.log(trimmedPassword,"Trimmed", email)
     if (password !== trimmedPassword) {
       setPasswordError('Password should not contain leading or trailing spaces');
       isValid = false;
@@ -51,10 +52,10 @@ const LoginMainScreen = () => {
     }
   
     try {
-      const response = await axios.post(API_URL + 'user/login', {
+      const response = await axios.post(API_URL + '/user/login', {
         email: email,
         password: trimmedPassword,
-        role: "BUYER" // Adjust as per your backend requirements
+        role: "BUYER"
       });
   
       console.log('Login response:', response.data);
@@ -72,7 +73,7 @@ const LoginMainScreen = () => {
       }
   
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error:', error.response);
       setAlertMessage('Please log in later');
       setAlertVisible(true);
     }
@@ -129,7 +130,7 @@ const LoginMainScreen = () => {
             borderColor={COLORS.DarkBlue}
           />
 
-          <TouchableOpacity onPress={() => navigation.navigate(ROUTES.ForgotPassword)}>
+          <TouchableOpacity onPress={() => navigation.navigate(ROUTES.ForgotEmail)}>
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 

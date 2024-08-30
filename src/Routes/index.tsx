@@ -14,5 +14,7 @@ export const ROUTES = {
    Payment:'Payment',
    PdfScreen:'PdfScreen',
    OnBoard:'OnBoard',
+   OTPInput:'OTPInput',
+   ForgotEmail:'ForgotEmail'
     
 }

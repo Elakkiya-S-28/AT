@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, Image, StyleSheet, TouchableOpacity } from "r
 import ICONS from "../../Images/Icon";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
+import { API_URL } from "../../config/API";
 
 const PdfScreen = () => {
     const route = useRoute();
@@ -16,7 +17,7 @@ const PdfScreen = () => {
         console.log("Fetching data..."); 
         try {
             const response = await axios.get(
-                'http://3.82.35.124:3001/order/getOrderDetails',
+                API_URL+ '/order/getOrderDetails',
                 {
                     params: {
                         email: email,

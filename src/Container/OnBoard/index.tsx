@@ -8,7 +8,7 @@ const OnBoard = ({ navigation }) => {
 
     const slides = [
         {
-            image: IMAGES.onboardImage,
+            image: IMAGES.onboardimage1,
             content: 'Manufacturers of top notch eco-friendly yarns and fabrics',
         },
         {
@@ -16,7 +16,7 @@ const OnBoard = ({ navigation }) => {
             content: 'Innovative solutions with sustainable practices and high performance teams',
         },
         {
-            image: IMAGES.onboardimg,
+            image: IMAGES.onboardimage2,
             content: 'Steered thought leadership fostering inclusive growth',
         },
     ];

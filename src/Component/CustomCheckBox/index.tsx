@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { COLORS } from '../../config/COLORS';
 
 const Checkbox = ({ label, checked, onChange }) => {
   return (
@@ -22,13 +23,13 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    borderColor: '#1679AB',
+    borderColor:COLORS.DarkBlue,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
   },
   checked: {
-    backgroundColor: '#1679AB',
+    backgroundColor: COLORS.DarkBlue,
   },
   checkSymbol: {
     fontSize: 16,
