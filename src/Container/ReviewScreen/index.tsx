@@ -287,14 +287,14 @@ import { COLORS } from '../../config/COLORS';
 
 const ReviewScreen = ({ navigation }) => {
   const route = useRoute();
-  const { token, email, cartItems,category } = route.params;
+  const { token, email, cartItems, category } = route.params;
   const [orderDetails, setOrderDetails] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  console.log(category,"Category", email, token)
+
   const fetchAddOrder = async () => {
     try {
       const response = await axios.post(
-        API_URL+'/order/addOrder',
+        API_URL + '/order/addOrder',
         {
           user: { email, role: 'BUYER' },
           products: cartItems,
@@ -312,11 +312,11 @@ const ReviewScreen = ({ navigation }) => {
       console.error('Error adding to cart:', error);
     }
   };
-  console.log(email,"EMILL", token)
+
   const fetchOrderDetails = async () => {
     try {
       const payload = { status: 'IN-CART', email: email };
-      console.log("Payload:", payload); // Log the payload being sent
+      console.log("Payload:", payload);
   
       const response = await axios.post(
         API_URL + '/user/getOrderDetails',
@@ -342,17 +342,21 @@ const ReviewScreen = ({ navigation }) => {
   }, [token, email]);
 
   const handleDelete = async (orderId) => {
+    console.log(orderId, "ORDERID");
     try {
       await axios.delete(API_URL + `/order/deleteOrders?id=${orderId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchOrderDetails();
       Alert.alert('Success', 'Item deleted successfully');
+      setOrderDetails(prevOrderDetails => prevOrderDetails.filter(order => order.orderId !== orderId));
+  
+     
     } catch (error) {
       console.error('Error deleting item:', error.response?.data || error.message);
       Alert.alert('Error', 'Failed to delete item');
     }
   };
+  
 
   const latestOrder = orderDetails.length > 0 
     ? orderDetails.reduce((latest, order) => new Date(order.createdOn) > new Date(latest.createdOn) ? order : latest, orderDetails[0]) 

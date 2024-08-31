@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/core';
 import { ROUTES } from '../../Routes';
 import { COLORS } from '../../config/COLORS';
 import IMAGES from '../../Images/Image';
+import axios from 'axios';
+import { API_URL } from '../../config/API';
 
 export const ForgotEmail = () => {
     const navigation = useNavigation();
@@ -18,14 +20,25 @@ export const ForgotEmail = () => {
         return emailRegex.test(email);
     };
 
-    const handleForgotPassword = () => {
+    const handleForgotPassword = async() => {
         if (!email) {
             setEmailError('Email is required');
         } else if (!validateEmail(email)) {
             setEmailError('Please enter a valid email address');
         } else {
             setEmailError('');
-            navigation.navigate(ROUTES.OTPInput, { email:email });
+            try{
+                const response = await axios.get(API_URL + `/user/getOTP?email=${email}`)
+                console.log(response,"REsponse");
+                console.log(response.data, "RESPONSE of DATA in ForgotEMail")
+                if(response.data.status === 200){
+                    navigation.navigate(ROUTES.OTPInput, { email:email });
+                }
+            }
+            catch(error){
+                console.log("Error", error.response)
+            }
+          
         }
     };
     const getEmailBorderColor = () => {

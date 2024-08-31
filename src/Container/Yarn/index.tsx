@@ -295,7 +295,7 @@ const Yarn = () => {
       console.log('Order Response:', response.data);
       setCartItems([...cartItems, { productId, quantity: parseInt(quantity, 10) }]);
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error('Error adding to cart:', error.response.data);
     }
   };
 

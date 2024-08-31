@@ -214,8 +214,7 @@
 // export default Fabric;
 
 
-// import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity, Modal } from 'react-native';
 import IMAGES from '../../Images/Image';
 import ICONS from '../../Images/Icon';
 import { ROUTES } from '../../Routes';
@@ -231,8 +230,9 @@ const Fabric = () => {
   const { token, email, product } = route.params;
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState({});
-  const [openModal,setOpenModal] = useState(false);
-  const[openCheckoutModal, setOpenCheckoutModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [openCheckoutModal, setOpenCheckoutModal] = useState(false);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       setQuantities({});
@@ -245,7 +245,6 @@ const Fabric = () => {
   const handleAddToCart = (productId) => {
     const quantity = quantities[productId];
     if (!quantity) {
-      // console.error('Quantity is required');
       setOpenModal(true);
       return;
     }
@@ -260,19 +259,26 @@ const Fabric = () => {
   };
 
   const handleNavigateToReview = async () => {
+    if (cartItems.length === 0) {
+      setOpenModal(true);
+      return;
+    }
+
     const orderData = {
       user: {
         email: email,
         role: 'BUYER',
       },
-      products: cartItems,
+      products: cartItems.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      })),
       status: 'IN-CART',
-      
     };
 
     try {
       const response = await axios.post(
-        API_URL+'/order/addOrder',
+        `${API_URL}/order/addOrder`,
         orderData,
         {
           headers: {
@@ -284,10 +290,16 @@ const Fabric = () => {
       console.log('Order Response:', response.data);
       navigation.navigate(ROUTES.ReviewScreen, { cartItems: response.data, token, email });
     } catch (error) {
-      console.error('Error adding to cart:', error);
-      // setOpenCheckoutModal(true);
+      console.error('Error adding to cart:', error.response?.data || error.message);
+      setOpenCheckoutModal(true);
     }
   };
+
+  const renderHeader = () => (
+    <View style={{ margin: 16 }}>
+      <Text style={styles.subtitle}>In the spotlight</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -305,48 +317,46 @@ const Fabric = () => {
           )}
         </TouchableOpacity>
       </View>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={{ margin: 16 }}>
-          <Text style={styles.subtitle}>In the spotlight</Text>
-          <FlatList
-            data={product}
-            renderItem={({ item }) => (
-              <View style={styles.card}>
-                <View style={styles.imageContainer}>
-                  <Text style={{ color: 'black', fontWeight: 'bold', textAlign: 'justify' }}>{item.productId}</Text>
-                  <Image source={IMAGES.fabric} style={styles.productImage} />
-                  <View style={styles.discountBox}>
-                    <Text style={styles.discount}>30% OFF</Text>
-                  </View>
-                </View>
-                <View style={styles.productInfo}>
-                  <Text style={styles.productName}>{item.productName}</Text>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      placeholder="kg"
-                      placeholderTextColor={'gray'}
-                      style={styles.input}
-                      keyboardType="numeric"
-                      value={quantities[item.productId] || ''}
-                      onChangeText={(text) => setQuantities({ ...quantities, [item.productId]: text })}
-                    />
-                  </View>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text style={styles.price}>Rs. {item.gstPriceForBuyer}/kg</Text>
-                    <TouchableOpacity
-                      style={styles.addButton}
-                      onPress={() => handleAddToCart(item.productId)}
-                    >
-                      <Text style={styles.addButtonText}>ADD</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+      <FlatList
+        data={product}
+        scrollEnabled={true}
+        ListHeaderComponent={renderHeader}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <View style={styles.imageContainer}>
+              <Text style={{ color: 'black', fontWeight: 'bold', textAlign: 'justify' }}>{item.productId}</Text>
+              <Image source={IMAGES.fabric} style={styles.productImage} />
+              <View style={styles.discountBox}>
+                <Text style={styles.discount}>30% OFF</Text>
               </View>
-            )}
-            keyExtractor={item => item._id}
-          />
-        </View>
-      </ScrollView>
+            </View>
+            <View style={styles.productInfo}>
+              <Text style={styles.productName}>{item.productName}</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder="kg"
+                  placeholderTextColor={'gray'}
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={quantities[item.productId] || ''}
+                  onChangeText={(text) => setQuantities({ ...quantities, [item.productId]: text })}
+                />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text style={styles.price}>Rs. {item.gstPriceForBuyer}/kg</Text>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => handleAddToCart(item.productId)}
+                >
+                  <Text style={styles.addButtonText}>ADD</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
+        keyExtractor={item => item._id}
+      />
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -356,24 +366,21 @@ const Fabric = () => {
         }}
       >
         <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
-          {/* <Text style={styles.modalTitle}>Confirm</Text> */}
-          
-          <Text style={styles.modalMessage}>Please, Add the Quantity !!</Text>
-          <View style={styles.modalButtonContainer}>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setOpenModal(false)}
-            >
-              <Text style={styles.modalButtonText}>Ok</Text>
-            </TouchableOpacity>
-         
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalMessage}>Please, Add the Quantity !!</Text>
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setOpenModal(false)}
+              >
+                <Text style={styles.modalButtonText}>Ok</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
       </Modal>
 
-      {/* <Modal
+      <Modal
         animationType="slide"
         transparent={true}
         visible={openCheckoutModal}
@@ -382,24 +389,24 @@ const Fabric = () => {
         }}
       >
         <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
-          
-          <Text style={styles.modalMessage}>Please, Add the Quantity !!</Text>
-          <View style={styles.modalButtonContainer}>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setOpenCheckoutModal(false)}
-            >
-              <Text style={styles.modalButtonText}>Ok</Text>
-            </TouchableOpacity>
-         
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalMessage}>Something went wrong while adding to cart. Please try again later.</Text>
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setOpenCheckoutModal(false)}
+              >
+                <Text style={styles.modalButtonText}>Ok</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-      </Modal> */}
+      </Modal>
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -432,7 +439,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 16,
-    marginBottom: 16,
+    // marginBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
     shadowColor: '#000',
@@ -440,6 +447,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 5,
     elevation: 3,
+    margin:16,
   },
   imageContainer: {
     position: 'relative',
