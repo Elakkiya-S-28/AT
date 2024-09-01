@@ -1,3 +1,3 @@
-export const COLORS : any = {
-    DarkBlue:'#0b2239',
-}
+export const COLORS: any = {
+  DarkBlue: '#0b2239',
+};

@@ -6,7 +6,6 @@
 // import axios from 'axios';
 // import { useRoute } from '@react-navigation/core';
 
-
 // const Yarn = ({ navigation }) => {
 //   const route = useRoute();
 //   const { token, email } = route.params;
@@ -25,7 +24,7 @@
 //         }
 //       ],
 //       status: 'IN-CART',
-//       orderId: 37 
+//       orderId: 37
 //     };
 //     console.log(orderData, "OrderData");
 
@@ -232,21 +231,29 @@
 
 // export default Yarn;
 
-
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import IMAGES from '../../Images/Image';
 import ICONS from '../../Images/Icon';
-import { ROUTES } from '../../Routes';
-import { useRoute, useNavigation } from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
+import {useRoute, useNavigation} from '@react-navigation/core';
 import axios from 'axios';
-import { API_URL } from '../../config/API';
-import { COLORS } from '../../config/COLORS';
+import {API_URL} from '../../config/API';
+import {COLORS} from '../../config/COLORS';
 
 const Yarn = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { token, email, product } = route.params;
+  const {token, email, product} = route.params;
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState({});
 
@@ -259,7 +266,7 @@ const Yarn = () => {
     return unsubscribe;
   }, [navigation]);
 
-  const handleAddToCart = async (productId) => {
+  const handleAddToCart = async productId => {
     const quantity = quantities[productId];
     if (!quantity) {
       console.error('Quantity is required');
@@ -269,31 +276,34 @@ const Yarn = () => {
     const orderData = {
       user: {
         email: email,
-        role: 'BUYER'
+        role: 'BUYER',
       },
       products: [
         {
           productId,
-          quantity: parseInt(quantity, 10)
-        }
+          quantity: parseInt(quantity, 10),
+        },
       ],
       status: 'IN-CART',
-      orderId: 37
+      orderId: 37,
     };
 
     try {
       const response = await axios.post(
-        API_URL+'/order/addOrder',
+        API_URL + '/order/addOrder',
         orderData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-        }
+        },
       );
       console.log('Order Response:', response.data);
-      setCartItems([...cartItems, { productId, quantity: parseInt(quantity, 10) }]);
+      setCartItems([
+        ...cartItems,
+        {productId, quantity: parseInt(quantity, 10)},
+      ]);
     } catch (error) {
       console.error('Error adding to cart:', error.response.data);
     }
@@ -306,11 +316,25 @@ const Yarn = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image source={ICONS.left} style={{ tintColor: 'white', height: 24, width: 24 }} />
+          <Image
+            source={ICONS.left}
+            style={{tintColor: 'white', height: 24, width: 24}}
+          />
         </TouchableOpacity>
         <Text style={styles.header}>Yarn</Text>
-        <TouchableOpacity onPress={() => navigation.navigate(ROUTES.ReviewScreen, { cartItems, token, email, category })}>
-          <Image source={ICONS.cart} style={{ tintColor: 'white', height: 24, width: 24 }} />
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate(ROUTES.ReviewScreen, {
+              cartItems,
+              token,
+              email,
+              category,
+            })
+          }>
+          <Image
+            source={ICONS.cart}
+            style={{tintColor: 'white', height: 24, width: 24}}
+          />
           {cartItems.length > 0 && (
             <View style={styles.notification}>
               <Text style={styles.notificationText}>{cartItems.length}</Text>
@@ -319,14 +343,21 @@ const Yarn = () => {
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={{ margin: 16 }}>
+        <View style={{margin: 16}}>
           <Text style={styles.subtitle}>In the spotlight</Text>
           <FlatList
             data={product}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <View style={styles.card}>
                 <View style={styles.imageContainer}>
-                  <Text style={{ color: 'black', fontWeight: 'bold', textAlign: 'justify' }}>{item.productId}</Text>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontWeight: 'bold',
+                      textAlign: 'justify',
+                    }}>
+                    {item.productId}
+                  </Text>
                   <Image source={IMAGES.yarn} style={styles.productImage} />
                   <View style={styles.discountBox}>
                     <Text style={styles.discount}>30% OFF</Text>
@@ -341,15 +372,23 @@ const Yarn = () => {
                       style={styles.input}
                       keyboardType="numeric"
                       value={quantities[item.productId] || ''}
-                      onChangeText={(text) => setQuantities({ ...quantities, [item.productId]: text })}
+                      onChangeText={text =>
+                        setQuantities({...quantities, [item.productId]: text})
+                      }
                     />
                   </View>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text style={styles.price}>Rs. {item.gstPriceForBuyer}/kg</Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={styles.price}>
+                      Rs. {item.gstPriceForBuyer}/kg
+                    </Text>
                     <TouchableOpacity
                       style={styles.addButton}
-                      onPress={() => handleAddToCart(item.productId)}
-                    >
+                      onPress={() => handleAddToCart(item.productId)}>
                       <Text style={styles.addButtonText}>ADD</Text>
                     </TouchableOpacity>
                   </View>
@@ -400,7 +439,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowRadius: 5,
     elevation: 3,
   },
@@ -462,7 +501,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     // backgroundColor: '#FF4D4D',
-    backgroundColor:COLORS.DarkBlue,
+    backgroundColor: COLORS.DarkBlue,
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,

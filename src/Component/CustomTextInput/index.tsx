@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import ICONS from '../../Images/Icon';
 
 const CustomTextInput = ({
@@ -15,13 +22,13 @@ const CustomTextInput = ({
   style,
   toggleSecureEntry,
   showPassword,
-  borderColor = '#ccc', 
+  borderColor = '#ccc',
   onSubmit, // New prop for submit action
 }) => {
   return (
     <View style={styles.inputContainer}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.inputWrapper, { borderColor }]}>
+      <View style={[styles.inputWrapper, {borderColor}]}>
         <TextInput
           style={[styles.textInput, style]}
           placeholder={placeholder}
@@ -34,8 +41,13 @@ const CustomTextInput = ({
           returnKeyType="done" // Show 'done' button on the keyboard
         />
         {isPasswordField && (
-          <TouchableOpacity onPress={toggleSecureEntry} style={styles.eyeIconContainer}>
-            <Image source={showPassword ? ICONS.password : ICONS.hide} style={styles.eyeIcon} />
+          <TouchableOpacity
+            onPress={toggleSecureEntry}
+            style={styles.eyeIconContainer}>
+            <Image
+              source={showPassword ? ICONS.password : ICONS.hide}
+              style={styles.eyeIcon}
+            />
           </TouchableOpacity>
         )}
       </View>

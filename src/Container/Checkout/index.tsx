@@ -177,20 +177,20 @@
 
 // export default Checkout;
 
-
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import ICONS from '../../Images/Icon';
-import { useNavigation, useRoute } from '@react-navigation/core';
-import { ROUTES } from '../../Routes';
-import { useTimer } from '../../Context/TimerContext'; 
-import { COLORS } from '../../config/COLORS';
+import {useNavigation, useRoute} from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
+import {useTimer} from '../../Context/TimerContext';
+import {COLORS} from '../../config/COLORS';
 
 const Checkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { token, items, totalQuantity, totalItems, totalPrice, category ,email} = route.params;
-  const { remainingTime, setRemainingTime } = useTimer();
+  const {token, items, totalQuantity, totalItems, totalPrice, category, email} =
+    route.params;
+  const {remainingTime, setRemainingTime} = useTimer();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -206,22 +206,27 @@ const Checkout = () => {
     return () => clearInterval(timer);
   }, [setRemainingTime]);
 
-  const formatTime = (seconds) => {
+  const formatTime = seconds => {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${hrs.toString().padStart(2, '0')}:${mins
+      .toString()
+      .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image source={ICONS.left} style={{ tintColor: 'white', height: 24, width: 24 }} />
+          <Image
+            source={ICONS.left}
+            style={{tintColor: 'white', height: 24, width: 24}}
+          />
         </TouchableOpacity>
         <Text style={styles.title}>Summary</Text>
       </View>
-      <View style={{ margin: 16 }}>
+      <View style={{margin: 16}}>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fabric</Text>
           <Text style={styles.itemCount}>{totalItems} items</Text>
@@ -231,11 +236,10 @@ const Checkout = () => {
           <View style={styles.row}>
             <Text style={styles.label}>ORDER NUMBER</Text>
             {category === 'yarn' ? (
-               <Text style={styles.value}>YA {items[0].orderId}</Text>
+              <Text style={styles.value}>YA {items[0].orderId}</Text>
             ) : (
               <Text style={styles.value}>FA {items[0].orderId}</Text>
             )}
-           
           </View>
 
           <View style={styles.row}>
@@ -255,13 +259,27 @@ const Checkout = () => {
             </View>
           </View>
 
-          <View style={{ justifyContent: 'center', marginTop: 10, marginBottom: 20 }}>
+          <View
+            style={{justifyContent: 'center', marginTop: 10, marginBottom: 20}}>
             <View style={styles.timeContainer}>
-              <Text style={styles.timeText}>{formatTime(remainingTime)} left</Text>
+              <Text style={styles.timeText}>
+                {formatTime(remainingTime)} left
+              </Text>
             </View>
           </View>
 
-          <TouchableOpacity style={styles.payButton} onPress={() => navigation.navigate(ROUTES.Payment, { token, items, totalPrice, totalQuantity,category, email})}>
+          <TouchableOpacity
+            style={styles.payButton}
+            onPress={() =>
+              navigation.navigate(ROUTES.Payment, {
+                token,
+                items,
+                totalPrice,
+                totalQuantity,
+                category,
+                email,
+              })
+            }>
             <Text style={styles.payText}>PAY AMOUNT</Text>
           </TouchableOpacity>
         </View>
@@ -308,7 +326,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,

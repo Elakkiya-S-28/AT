@@ -1,11 +1,11 @@
 // Settings.js
-import React, { useState } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, Image, TouchableOpacity, Text} from 'react-native';
 import ProfileTextInput from '../../Component/ProfileTextInput';
 import CustomButton from '../../Component/CustomButton';
-import { useNavigation } from '@react-navigation/core';
-import { ROUTES } from '../../Routes';
-import { COLORS } from '../../config/COLORS';
+import {useNavigation} from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
+import {COLORS} from '../../config/COLORS';
 
 const Settings = () => {
   const [name, setName] = useState('Elakkiya S');
@@ -27,18 +27,29 @@ const Settings = () => {
           />
         </TouchableOpacity>
       </View> */}
-      <View style={{ backgroundColor: '#1679AB', padding: 10 }}>
-        <Text style={{ color: 'white', fontSize: 20, padding: 10, textAlign: 'center' }}>Settings</Text>
+      <View style={{backgroundColor: '#1679AB', padding: 10}}>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 20,
+            padding: 10,
+            textAlign: 'center',
+          }}>
+          Settings
+        </Text>
       </View>
-      <View style={{ padding: 20 }}>
+      <View style={{padding: 20}}>
         <ProfileTextInput
           label="Full Name"
           value={name}
-          onChangeText={setName} secureTextEntry={false} />
+          onChangeText={setName}
+          secureTextEntry={false}
+        />
         <ProfileTextInput
           label="E-mail"
           value={email}
-          onChangeText={setEmail} secureTextEntry={false}
+          onChangeText={setEmail}
+          secureTextEntry={false}
         />
         <ProfileTextInput
           label="Password"
@@ -49,9 +60,16 @@ const Settings = () => {
         <ProfileTextInput
           label="Phone Number"
           value={phoneNumber}
-          onChangeText={setPhoneNumber} secureTextEntry={false}
+          onChangeText={setPhoneNumber}
+          secureTextEntry={false}
         />
-        <CustomButton title={"Logout"} onPress={() => navigation.navigate(ROUTES.FirstScreen)} bgColor={COLORS.DarkBlue} textColor={"white"} borderColor={COLORS.DarkBlue} />
+        <CustomButton
+          title={'Logout'}
+          onPress={() => navigation.navigate(ROUTES.FirstScreen)}
+          bgColor={COLORS.DarkBlue}
+          textColor={'white'}
+          borderColor={COLORS.DarkBlue}
+        />
       </View>
       {/* Add more inputs as needed */}
     </View>

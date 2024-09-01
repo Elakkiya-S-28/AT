@@ -1,26 +1,44 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+} from 'react-native';
 import CustomButton from '../../Component/CustomButton';
-import { useNavigation } from '@react-navigation/core';
-import { ROUTES } from '../../Routes';
+import {useNavigation} from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
 import IMAGES from '../../Images/Image';
 
 const Login = () => {
   const navigation = useNavigation();
   return (
-
-    <ImageBackground style={styles.container} source={IMAGES.loginimage}
+    <ImageBackground
+      style={styles.container}
+      source={IMAGES.loginimage}
       style={styles.background}
       resizeMode="cover">
-          <View style={styles.container}>
-     
+      <View style={styles.container}>
+
           <Text style={styles.subText}>If you'd like to login or sign up??</Text>
-      <CustomButton title={'Login'} onPress={() => navigation.navigate(ROUTES.LoginMainScreen)} bgColor={'#1679AB'} textColor={'white'} borderColor={'#1679AB'} />
-      <CustomButton title={'Register'} onPress={() => navigation.navigate(ROUTES.SignUp)} bgColor={'white'} textColor={'#1679AB'} borderColor={'white'} />
-      
+        <CustomButton
+          title={'Login'}
+          onPress={() => navigation.navigate(ROUTES.LoginMainScreen)}
+          bgColor={'#1679AB'}
+          textColor={'white'}
+          borderColor={'#1679AB'}
+        />
+        <CustomButton
+          title={'Register'}
+          onPress={() => navigation.navigate(ROUTES.SignUp)}
+          bgColor={'white'}
+          textColor={'#1679AB'}
+          borderColor={'white'}
+/>
       </View>
     </ImageBackground>
-
   );
 };
 
@@ -36,7 +54,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     marginTop: 20,
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
   background: {
     flex: 1,
@@ -47,7 +65,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     marginBottom: 40,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   loginButton: {
     backgroundColor: '#ffffff',

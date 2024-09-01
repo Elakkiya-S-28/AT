@@ -1,17 +1,17 @@
-import React, { useState, useRef } from 'react';
-import { View, TextInput, StyleSheet, Text, Button } from 'react-native';
+import React, {useState, useRef} from 'react';
+import {View, TextInput, StyleSheet, Text, Button} from 'react-native';
 import CustomButton from '../../Component/CustomButton';
-import { ROUTES } from '../../Routes';
-import { useNavigation, useRoute } from '@react-navigation/core';
-import { COLORS } from '../../config/COLORS';
+import {ROUTES} from '../../Routes';
+import {useNavigation, useRoute} from '@react-navigation/core';
+import {COLORS} from '../../config/COLORS';
 
 const OTPInput = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const refs = useRef([]);
   const navigation = useNavigation();
   const route = useRoute();
-  const {email}= route.params;
-  console.log('Email in OTP', email)
+  const {email} = route.params;
+  console.log('Email in OTP', email);
 
   const handleInputChange = (value, index) => {
     const newOtp = [...otp];
@@ -35,7 +35,10 @@ const OTPInput = () => {
   const handleSubmit = () => {
     const otpCode = otp.join('');
     console.log('OTP Entered:', otpCode);
-    navigation.navigate(ROUTES.ForgotPassword, {otpCode:otpCode, email:email})
+    navigation.navigate(ROUTES.ForgotPassword, {
+      otpCode: otpCode,
+      email: email,
+    });
   };
 
   return (
@@ -45,11 +48,11 @@ const OTPInput = () => {
         {otp.map((_, index) => (
           <TextInput
             key={index}
-            ref={(el) => (refs.current[index] = el)}
+            ref={el => (refs.current[index] = el)}
             style={styles.input}
             value={otp[index]}
-            onChangeText={(value) => handleInputChange(value, index)}
-            onKeyPress={(e) => handleKeyPress(e, index)}
+            onChangeText={value => handleInputChange(value, index)}
+            onKeyPress={e => handleKeyPress(e, index)}
             keyboardType="numeric"
             maxLength={1}
           />
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     color: '#1679AB',
-    fontWeight:'bold',
+    fontWeight: 'bold',
     marginBottom: 40,
   },
   otpContainer: {
@@ -91,8 +94,8 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     textAlign: 'center',
     fontSize: 18,
-    color:'black',
-    borderRadius:10,
+    color: 'black',
+    borderRadius: 10,
     marginHorizontal: 5,
   },
 });

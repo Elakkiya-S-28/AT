@@ -1,5 +1,5 @@
 // src/context/TimerContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {createContext, useContext, useState, ReactNode} from 'react';
 
 interface TimerContextProps {
   remainingTime: number;
@@ -12,11 +12,11 @@ interface TimerProviderProps {
   children: ReactNode;
 }
 
-export const TimerProvider: React.FC<TimerProviderProps> = ({ children }) => {
+export const TimerProvider: React.FC<TimerProviderProps> = ({children}) => {
   const [remainingTime, setRemainingTime] = useState<number>(2 * 60 * 60); // 2 hours in seconds
 
   return (
-    <TimerContext.Provider value={{ remainingTime, setRemainingTime }}>
+    <TimerContext.Provider value={{remainingTime, setRemainingTime}}>
       {children}
     </TimerContext.Provider>
   );

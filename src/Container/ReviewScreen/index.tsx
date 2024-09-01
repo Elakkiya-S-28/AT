@@ -275,19 +275,29 @@
 // });
 
 // export default ReviewScreen;
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Alert, Modal, Pressable } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  Pressable,
+} from 'react-native';
 import IMAGES from '../../Images/Image';
 import ICONS from '../../Images/Icon';
-import { ROUTES } from '../../Routes';
-import { useRoute } from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
+import {useRoute} from '@react-navigation/core';
 import axios from 'axios';
-import { API_URL } from '../../config/API';
-import { COLORS } from '../../config/COLORS';
+import {API_URL} from '../../config/API';
+import {COLORS} from '../../config/COLORS';
 
-const ReviewScreen = ({ navigation }) => {
+const ReviewScreen = ({navigation}) => {
   const route = useRoute();
-  const { token, email, cartItems, category } = route.params;
+  const {token, email, cartItems, category} = route.params;
   const [orderDetails, setOrderDetails] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -296,7 +306,7 @@ const ReviewScreen = ({ navigation }) => {
       const response = await axios.post(
         API_URL + '/order/addOrder',
         {
-          user: { email, role: 'BUYER' },
+          user: {email, role: 'BUYER'},
           products: cartItems,
           status: 'IN-CART',
         },
@@ -305,7 +315,7 @@ const ReviewScreen = ({ navigation }) => {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-        }
+        },
       );
       console.log('Order Response:', response.data);
     } catch (error) {
@@ -315,9 +325,9 @@ const ReviewScreen = ({ navigation }) => {
 
   const fetchOrderDetails = async () => {
     try {
-      const payload = { status: 'IN-CART', email: email };
-      console.log("Payload:", payload);
-  
+      const payload = {status: 'IN-CART', email: email};
+      console.log('Payload:', payload);
+
       const response = await axios.post(
         API_URL + '/user/getOrderDetails',
         payload,
@@ -326,13 +336,23 @@ const ReviewScreen = ({ navigation }) => {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-        }
+        },
       );
-  
-      console.log(response.data.message, "Fetched Orders");
+
+      console.log(response.data.message, 'Fetched Orders');
+      response.data.message.forEach(order => {
+        console.log(`Order ID: ${order.orderId}`);
+        order.products.forEach((product, index) => {
+          console.log(`Product ${index + 1}:`, product);
+        });
+      });
+
       setOrderDetails(response.data.message);
     } catch (error) {
-      console.error('Error fetching order details:', error.response?.data || error.message);
+      console.error(
+        'Error fetching order details:',
+        error.response?.data || error.message,
+      );
     }
   };
 
@@ -341,29 +361,22 @@ const ReviewScreen = ({ navigation }) => {
     fetchAddOrder();
   }, [token, email]);
 
-  const handleDelete = async (orderId) => {
-    console.log(orderId, "ORDERID");
-    try {
-      await axios.delete(API_URL + `/order/deleteOrders?id=${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      Alert.alert('Success', 'Item deleted successfully');
-      setOrderDetails(prevOrderDetails => prevOrderDetails.filter(order => order.orderId !== orderId));
-  
-     
-    } catch (error) {
-      console.error('Error deleting item:', error.response?.data || error.message);
-      Alert.alert('Error', 'Failed to delete item');
-    }
-  };
-  
+  const latestOrder =
+    orderDetails.length > 0
+      ? orderDetails.reduce(
+          (latest, order) =>
+            new Date(order.createdOn) > new Date(latest.createdOn)
+              ? order
+              : latest,
+          orderDetails[0],
+        )
+      : {};
 
-  const latestOrder = orderDetails.length > 0 
-    ? orderDetails.reduce((latest, order) => new Date(order.createdOn) > new Date(latest.createdOn) ? order : latest, orderDetails[0]) 
-    : {};
-  
   const products = latestOrder.products || [];
-  const totalQuantity = products.reduce((sum, product) => sum + product.quantity, 0);
+  const totalQuantity = products.reduce(
+    (sum, product) => sum + product.quantity,
+    0,
+  );
   const totalPrice = latestOrder.totalPrice || 0;
 
   const navigateToCheckout = () => {
@@ -374,7 +387,7 @@ const ReviewScreen = ({ navigation }) => {
       token,
       totalItems: 1,
       category,
-      email
+      email,
     });
   };
 
@@ -391,15 +404,20 @@ const ReviewScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={handleBackPress}>
-          <Image source={ICONS.left} style={{ tintColor: 'white', height: 24, width: 24 }} />
+          <Image
+            source={ICONS.left}
+            style={{tintColor: 'white', height: 24, width: 24}}
+          />
         </TouchableOpacity>
         <Text style={styles.header}>Review Basket</Text>
-        <Text style={styles.itemCount}>{latestOrder.orderId ? '1 item' : '0 items'}</Text>
+        <Text style={styles.itemCount}>
+          {latestOrder.orderId ? '1 item' : '0 items'}
+        </Text>
       </View>
       {products.length > 0 ? (
         <FlatList
           data={products}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <View style={styles.card}>
               <View style={styles.imageContainer}>
                 <Image source={IMAGES.fabric} style={styles.productImage} />
@@ -408,13 +426,15 @@ const ReviewScreen = ({ navigation }) => {
                 </View>
               </View>
               <View style={styles.productInfo}>
-                <Text style={styles.productName}>Product Name: {item.productName}</Text>
+                <Text style={styles.productName}>
+                  Product Name: {item.productName}
+                </Text>
                 <Text style={styles.quantity}>Quantity: {item.quantity}</Text>
                 <Text style={styles.price}>Price: ₹ {item.price}</Text>
               </View>
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => handleDelete(latestOrder.orderId)}
+                // onPress={() => handleDelete(latestOrder.orderId)}
               >
                 <Image source={ICONS.delete} style={styles.deleteIcon} />
               </TouchableOpacity>
@@ -427,31 +447,29 @@ const ReviewScreen = ({ navigation }) => {
       )}
       <View style={styles.fixedFooter}>
         <Text style={styles.totalPrice}>Total Price: ₹ {totalPrice}</Text>
-        <Text style={styles.totalQuantity}>Total Quantity: {totalQuantity}</Text>
-        <TouchableOpacity style={styles.checkoutButton} onPress={navigateToCheckout}>
+        <Text style={styles.totalQuantity}>
+          Total Quantity: {totalQuantity}
+        </Text>
+        <TouchableOpacity
+          style={styles.checkoutButton}
+          onPress={navigateToCheckout}>
           <Text style={styles.checkoutButtonText}>Checkout</Text>
         </TouchableOpacity>
       </View>
 
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="slide"
-      >
+      <Modal visible={isModalVisible} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Are you sure you want to go back? Your order will be erased.</Text>
+            <Text style={styles.modalText}>
+              Are you sure you want to go back? Your order will be erased.
+            </Text>
             <View style={styles.modalButtons}>
               <Pressable
                 style={styles.modalButton}
-                onPress={() => setIsModalVisible(false)}
-              >
+                onPress={() => setIsModalVisible(false)}>
                 <Text style={styles.modalButtonText}>Cancel</Text>
               </Pressable>
-              <Pressable
-                style={styles.modalButton}
-                onPress={handleConfirmBack}
-              >
+              <Pressable style={styles.modalButton} onPress={handleConfirmBack}>
                 <Text style={styles.modalButtonText}>Go Back</Text>
               </Pressable>
             </View>
@@ -461,7 +479,6 @@ const ReviewScreen = ({ navigation }) => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -570,7 +587,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   checkoutButton: {
-    backgroundColor:COLORS.DarkBlue,
+    backgroundColor: COLORS.DarkBlue,
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -614,7 +631,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     marginHorizontal: 10,
-    backgroundColor:COLORS.DarkBlue,
+    backgroundColor: COLORS.DarkBlue,
     borderRadius: 5,
     alignItems: 'center',
   },

@@ -1,8 +1,8 @@
 // ProfileTextInput.js
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import {View, Text, TextInput, StyleSheet} from 'react-native';
 
-const ProfileTextInput = ({ label, value, onChangeText, secureTextEntry }) => {
+const ProfileTextInput = ({label, value, onChangeText, secureTextEntry}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 5,
-    color:'black',
+    color: 'black',
   },
   input: {
     height: 40,
@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
-    padding:5,
-    color:'black'
+    padding: 5,
+    color: 'black',
   },
 });
 
