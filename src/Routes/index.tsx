@@ -16,4 +16,6 @@ export const ROUTES = {
   OnBoard: 'OnBoard',
   OTPInput: 'OTPInput',
   ForgotEmail: 'ForgotEmail',
+  TrackingScreen:'TrackingScreen',
+  TrackListScreen:'TrackListScreen'
 };

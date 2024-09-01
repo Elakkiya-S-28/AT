@@ -7,6 +7,7 @@ const ICONS = {
   logout: require('../Icon/logout/turn-off.png'),
   password: require('../Icon/password/view.png'),
   hide: require('../Icon/hide/hide.png'),
+  right:require('../Icon/rightarrow/right.png'),
 };
 
 export default ICONS;

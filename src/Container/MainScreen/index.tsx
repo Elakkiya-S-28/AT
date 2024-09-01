@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,21 +10,21 @@ import {
   Alert,
 } from 'react-native';
 import IMAGES from '../../Images/Image';
-import {ROUTES} from '../../Routes';
-import {useRoute} from '@react-navigation/core';
+import { ROUTES } from '../../Routes';
+import { useRoute } from '@react-navigation/core';
 import axios from 'axios';
 import ICONS from '../../Images/Icon';
-import {API_URL} from '../../config/API';
-import {COLORS} from '../../config/COLORS';
+import { API_URL } from '../../config/API';
+import { COLORS } from '../../config/COLORS';
 
 const categories = [
-  {id: '1', title: ROUTES.Fabric, image: IMAGES.fabric, category: 'fabric'},
-  {id: '2', title: ROUTES.Yarn, image: IMAGES.yarn, category: 'yarn'},
+  { id: '1', title: ROUTES.Fabric, image: IMAGES.fabric, category: 'fabric' },
+  { id: '2', title: ROUTES.Yarn, image: IMAGES.yarn, category: 'yarn' },
 ];
 
-const MainScreen = ({navigation}) => {
+const MainScreen = ({ navigation }) => {
   const route = useRoute();
-  const {token, email} = route.params; // Extract token from route params
+  const { token, email } = route.params; // Extract token from route params
   console.log(token, 'Token from mainscreen', email);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -64,7 +64,7 @@ const MainScreen = ({navigation}) => {
     try {
       const response = await axios.post(
         API_URL + '/user/getCategory',
-        {category},
+        { category },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -130,7 +130,7 @@ const MainScreen = ({navigation}) => {
             <TouchableOpacity
               style={[styles.modalButton, styles.modalButtonConfirm]}
               onPress={() => fetchCategory(selectedCategory)}>
-              <Text style={{color: 'white', fontWeight: 'bold'}}>OK</Text>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>OK</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -157,7 +157,7 @@ const MainScreen = ({navigation}) => {
         <Text style={styles.header}>Shop by Category</Text>
         <FlatList
           data={categories}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.card}
               onPress={() => handleCategoryPress(item.category)}>
@@ -168,6 +168,27 @@ const MainScreen = ({navigation}) => {
           keyExtractor={item => item.id}
         />
       </View>
+      <Text style={{ color: 'black', fontWeight: 'bold', margin: 16, fontSize: 20 }}>Check your Orders here</Text>
+      <View style={[styles.card, { margin: 16 }]}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(ROUTES.TrackListScreen)}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',  
+            flex: 1 
+          }}>
+          <Text style={{
+            color: 'black',
+            fontWeight: 'bold',
+            fontSize: 16
+          }}>
+            Your Order
+          </Text>
+          <Image source={ICONS.right} style={{ height: 30, width: 30 }} />
+        </TouchableOpacity>
+      </View>
+
       <CustomModal />
     </View>
   );
@@ -197,7 +218,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 26,
+    marginBottom: 46,
     color: 'black',
   },
   card: {
@@ -209,7 +230,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.3,
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowRadius: 5,
     elevation: 3,
   },

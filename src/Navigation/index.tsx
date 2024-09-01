@@ -18,6 +18,8 @@ import PdfScreen from '../Container/PdfScreen';
 import OnBoard from '../Container/OnBoard';
 import OTPInput from '../Container/OTP';
 import {ForgotEmail} from '../Container/ForgotEmail';
+import TrackingScreen from '../Container/TrackingScreen';
+import TrackListScreen from '../Container/TrackList';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +27,16 @@ function Navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={ROUTES.OnBoard}>
+      <Stack.Screen
+          name={ROUTES.TrackListScreen}
+          component={TrackListScreen}
+          options={{headerShown: false}}
+        />
+      <Stack.Screen
+          name={ROUTES.TrackingScreen}
+          component={TrackingScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name={ROUTES.OnBoard}
           component={OnBoard}
