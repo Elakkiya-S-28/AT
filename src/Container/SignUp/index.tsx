@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Modal } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Modal,
+} from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import CustomTextInput from '../../Component/CustomTextInput';
 import Checkbox from '../../Component/CustomCheckBox';
-import { useNavigation } from '@react-navigation/core';
-import { ROUTES } from '../../Routes';
+import {useNavigation} from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
 import ICONS from '../../Images/Icon';
 import axios from 'axios';
-import { API_URL } from '../../config/API';
-import { COLORS } from '../../config/COLORS';
+import {API_URL} from '../../config/API';
+import {COLORS} from '../../config/COLORS';
 
 const SignUp = () => {
   const navigation = useNavigation();
@@ -27,17 +35,34 @@ const SignUp = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!name.trim()) newErrors.name = 'Name is required';
-    if (!mobileNumber) newErrors.mobileNumber = 'Mobile number is required';
-    else if (!/^\d{10}$/.test(mobileNumber)) newErrors.mobileNumber = 'Invalid mobile number';
-    if (!email) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Invalid email';
-    if (!address.trim()) newErrors.address = 'Address is required';
-    else if (!/^[a-zA-Z0-9.,/ ]+$/.test(address)) newErrors.address = 'Invalid address';
-    if (!role) newErrors.role = 'Role is required';
-    if (!password.trim()) newErrors.password = 'Password is required';
-    else if (password.trim().length < 6) newErrors.password = 'Password must be at least 6 characters long';
-    else if (password.trim() === '') newErrors.password = 'Password cannot contain only spaces';
+    if (!name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    if (!mobileNumber) {
+      newErrors.mobileNumber = 'Mobile number is required';
+    } else if (!/^\d{10}$/.test(mobileNumber)) {
+      newErrors.mobileNumber = 'Invalid mobile number';
+    }
+    if (!email) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Invalid email';
+    }
+    if (!address.trim()) {
+      newErrors.address = 'Address is required';
+    } else if (!/^[a-zA-Z0-9.,/ ]+$/.test(address)) {
+      newErrors.address = 'Invalid address';
+    }
+    if (!role) {
+      newErrors.role = 'Role is required';
+    }
+    if (!password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (password.trim().length < 6) {
+      newErrors.password = 'Password must be at least 6 characters long';
+    } else if (password.trim() === '') {
+      newErrors.password = 'Password cannot contain only spaces';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -45,7 +70,9 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     setButtonClicked(true); // Indicate that the button was clicked
-    if (!validate()) return;
+    if (!validate()) {
+      return;
+    }
 
     const signUpData = {
       name: name.trim(),
@@ -57,21 +84,29 @@ const SignUp = () => {
       panNo: pan.trim(),
       gstNo: gst.trim(),
     };
-    console.log(signUpData, "SIGNUPDATA");
+    console.log(signUpData, 'SIGNUPDATA');
     try {
       const response = await axios.post(API_URL + '/user/signup', signUpData);
       console.log('Response:', response.data);
       setVisible(true); // Show success modal
     } catch (error) {
-      console.log("Error in signup", error.response);
-      console.error('Signup Error:', error.response ? error.response.data : error.message);
+      console.log('Error in signup', error.response);
+      console.error(
+        'Signup Error:',
+        error.response ? error.response.data : error.message,
+      );
     }
   };
 
-  const getBorderColor = (field) => {
-    if (buttonClicked) { // Check if the button has been clicked
-      if (errors[field]) return 'red';
-      if (!errors[field] && !field) return 'green';
+  const getBorderColor = field => {
+    if (buttonClicked) {
+      // Check if the button has been clicked
+      if (errors[field]) {
+        return 'red';
+      }
+      if (!errors[field] && !field) {
+        return 'green';
+      }
     }
     return '#ccc'; // Default border color
   };
@@ -79,9 +114,9 @@ const SignUp = () => {
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{flexDirection: 'row'}}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image source={ICONS.left} style={{ height: 24, width: 24 }} />
+            <Image source={ICONS.left} style={{height: 24, width: 24}} />
           </TouchableOpacity>
           <Text style={styles.backText}>Back</Text>
         </View>
@@ -179,7 +214,7 @@ const SignUp = () => {
             validationMessage={errors.address}
           />
 
-          <Text style={{ color: 'black' }}>Role</Text>
+          <Text style={{color: 'black'}}>Role</Text>
           <View style={styles.checkboxRow}>
             <Checkbox
               label="Customer"
@@ -220,8 +255,7 @@ const SignUp = () => {
               onPress={() => {
                 setVisible(false);
                 navigation.navigate(ROUTES.LoginMainScreen);
-              }}
-            >
+              }}>
               <Text style={styles.buttonText}>OK</Text>
             </TouchableOpacity>
           </View>
@@ -292,15 +326,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
-    color:'black'
+    color: 'black',
   },
   modalMessage: {
     fontSize: 16,
-     color:'black',
+    color: 'black',
     marginBottom: 20,
   },
   button: {
-    backgroundColor:COLORS.DarkBlue,
+    backgroundColor: COLORS.DarkBlue,
     padding: 10,
     borderRadius: 5,
     width: '100%',

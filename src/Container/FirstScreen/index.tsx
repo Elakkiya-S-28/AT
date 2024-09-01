@@ -1,32 +1,32 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
 import CustomButton from '../../Component/CustomButton';
-import { useNavigation } from '@react-navigation/core';
-import { ROUTES } from '../../Routes';
+import {useNavigation} from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
 import IMAGES from '../../Images/Image';
-import { COLORS } from '../../config/COLORS';
+import {COLORS} from '../../config/COLORS';
 
 const FirstScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
-        <Image source={IMAGES.mainimg} style={styles.topImage} />
+        {/* <Image source={IMAGES.mainimg} style={styles.topImage} /> */}
       </View>
 
       {/* <View style={styles.middleSection}>
-     
+
       </View> */}
 
       <View style={styles.bottomSection}>
-      <Image source={IMAGES.ATImage} style={styles.middleImage} />
+        <Image source={IMAGES.ATImage} style={styles.middleImage} />
         <Text style={styles.companyName}>ASHOK TEXTILES</Text>
         <Text style={styles.subtitle}>(SARANYA SPINNING MILLS PVT LTD)</Text>
-        <CustomButton 
-          title={'Get Started'} 
-          onPress={() => navigation.navigate(ROUTES.LoginMainScreen)} 
+        <CustomButton
+          title={'Get Started'}
+          onPress={() => navigation.navigate(ROUTES.LoginMainScreen)}
           bgColor={COLORS.DarkBlue}
-          textColor={'white'} 
+          textColor={'white'}
           borderColor={COLORS.DarkBlue}
         />
       </View>
@@ -62,14 +62,14 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 16,
-    marginVertical:25
+    marginVertical: 25,
   },
   companyName: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'black',
-    marginTop:34,
+    marginTop: 34,
   },
   subtitle: {
     fontSize: 14,

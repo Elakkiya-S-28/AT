@@ -22,8 +22,6 @@
 //     return unsubscribe;
 //   }, [navigation]);
 
-  
-
 //   return (
 //     <View style={styles.container}>
 //       <View style={styles.headerContainer}>
@@ -213,21 +211,29 @@
 
 // export default Fabric;
 
-
-import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity, Modal } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+} from 'react-native';
 import IMAGES from '../../Images/Image';
 import ICONS from '../../Images/Icon';
-import { ROUTES } from '../../Routes';
-import { useRoute, useNavigation } from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
+import {useRoute, useNavigation} from '@react-navigation/core';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { API_URL } from '../../config/API';
-import { COLORS } from '../../config/COLORS';
+import {useEffect, useState} from 'react';
+import {API_URL} from '../../config/API';
+import {COLORS} from '../../config/COLORS';
 
 const Fabric = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { token, email, product } = route.params;
+  const {token, email, product} = route.params;
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [openModal, setOpenModal] = useState(false);
@@ -242,7 +248,7 @@ const Fabric = () => {
     return unsubscribe;
   }, [navigation]);
 
-  const handleAddToCart = (productId) => {
+  const handleAddToCart = productId => {
     const quantity = quantities[productId];
     if (!quantity) {
       setOpenModal(true);
@@ -254,8 +260,8 @@ const Fabric = () => {
       quantity: parseInt(quantity, 10),
     };
 
-    setCartItems((prevItems) => [...prevItems, newProduct]);
-    setQuantities((prevQuantities) => ({ ...prevQuantities, [productId]: '' }));
+    setCartItems(prevItems => [...prevItems, newProduct]);
+    setQuantities(prevQuantities => ({...prevQuantities, [productId]: ''}));
   };
 
   const handleNavigateToReview = async () => {
@@ -285,18 +291,25 @@ const Fabric = () => {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-        }
+        },
       );
       console.log('Order Response:', response.data);
-      navigation.navigate(ROUTES.ReviewScreen, { cartItems: response.data, token, email });
+      navigation.navigate(ROUTES.ReviewScreen, {
+        cartItems: response.data,
+        token,
+        email,
+      });
     } catch (error) {
-      console.error('Error adding to cart:', error.response?.data || error.message);
+      console.error(
+        'Error adding to cart:',
+        error.response?.data || error.message,
+      );
       setOpenCheckoutModal(true);
     }
   };
 
   const renderHeader = () => (
-    <View style={{ margin: 16 }}>
+    <View style={{margin: 16}}>
       <Text style={styles.subtitle}>In the spotlight</Text>
     </View>
   );
@@ -305,11 +318,17 @@ const Fabric = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image source={ICONS.left} style={{ tintColor: 'white', height: 24, width: 24 }} />
+          <Image
+            source={ICONS.left}
+            style={{tintColor: 'white', height: 24, width: 24}}
+          />
         </TouchableOpacity>
         <Text style={styles.header}>Fabric</Text>
         <TouchableOpacity onPress={handleNavigateToReview}>
-          <Image source={ICONS.cart} style={{ tintColor: 'white', height: 24, width: 24 }} />
+          <Image
+            source={ICONS.cart}
+            style={{tintColor: 'white', height: 24, width: 24}}
+          />
           {cartItems.length > 0 && (
             <View style={styles.notification}>
               <Text style={styles.notificationText}>{cartItems.length}</Text>
@@ -321,10 +340,17 @@ const Fabric = () => {
         data={product}
         scrollEnabled={true}
         ListHeaderComponent={renderHeader}
-        renderItem={({ item }) => (
+        renderItem={({item}) => (
           <View style={styles.card}>
             <View style={styles.imageContainer}>
-              <Text style={{ color: 'black', fontWeight: 'bold', textAlign: 'justify' }}>{item.productId}</Text>
+              <Text
+                style={{
+                  color: 'black',
+                  fontWeight: 'bold',
+                  textAlign: 'justify',
+                }}>
+                {item.productId}
+              </Text>
               <Image source={IMAGES.fabric} style={styles.productImage} />
               <View style={styles.discountBox}>
                 <Text style={styles.discount}>30% OFF</Text>
@@ -339,15 +365,21 @@ const Fabric = () => {
                   style={styles.input}
                   keyboardType="numeric"
                   value={quantities[item.productId] || ''}
-                  onChangeText={(text) => setQuantities({ ...quantities, [item.productId]: text })}
+                  onChangeText={text =>
+                    setQuantities({...quantities, [item.productId]: text})
+                  }
                 />
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
                 <Text style={styles.price}>Rs. {item.gstPriceForBuyer}/kg</Text>
                 <TouchableOpacity
                   style={styles.addButton}
-                  onPress={() => handleAddToCart(item.productId)}
-                >
+                  onPress={() => handleAddToCart(item.productId)}>
                   <Text style={styles.addButtonText}>ADD</Text>
                 </TouchableOpacity>
               </View>
@@ -363,16 +395,14 @@ const Fabric = () => {
         visible={openModal}
         onRequestClose={() => {
           setOpenModal(!openModal);
-        }}
-      >
+        }}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalMessage}>Please, Add the Quantity !!</Text>
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity
                 style={styles.modalButton}
-                onPress={() => setOpenModal(false)}
-              >
+                onPress={() => setOpenModal(false)}>
                 <Text style={styles.modalButtonText}>Ok</Text>
               </TouchableOpacity>
             </View>
@@ -386,16 +416,16 @@ const Fabric = () => {
         visible={openCheckoutModal}
         onRequestClose={() => {
           setOpenCheckoutModal(!openCheckoutModal);
-        }}
-      >
+        }}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalMessage}>Something went wrong while adding to cart. Please try again later.</Text>
+            <Text style={styles.modalMessage}>
+              Something went wrong while adding to cart. Please try again later.
+            </Text>
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity
                 style={styles.modalButton}
-                onPress={() => setOpenCheckoutModal(false)}
-              >
+                onPress={() => setOpenCheckoutModal(false)}>
                 <Text style={styles.modalButtonText}>Ok</Text>
               </TouchableOpacity>
             </View>
@@ -405,8 +435,6 @@ const Fabric = () => {
     </View>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -444,10 +472,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowRadius: 5,
     elevation: 3,
-    margin:16,
+    margin: 16,
   },
   imageContainer: {
     position: 'relative',
@@ -536,7 +564,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: '90%',
-  
+
     padding: 20,
     backgroundColor: 'white',
     borderRadius: 10,
@@ -549,10 +577,10 @@ const styles = StyleSheet.create({
   },
   modalMessage: {
     fontSize: 16,
-    fontWeight:'bold',
+    fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color:'black',
+    color: 'black',
   },
   modalButtonContainer: {
     flexDirection: 'row',

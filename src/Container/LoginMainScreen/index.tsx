@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, Alert, Modal } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  Alert,
+  Modal,
+} from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import CustomTextInput from '../../Component/CustomTextInput';
-import { useNavigation } from '@react-navigation/core';
-import { ROUTES } from '../../Routes';
+import {useNavigation} from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
 import ICONS from '../../Images/Icon';
 import axios from 'axios';
 import IMAGES from '../../Images/Image';
-import { API_URL } from '../../config/API';
-import { COLORS } from '../../config/COLORS';
+import {API_URL} from '../../config/API';
+import {COLORS} from '../../config/COLORS';
 
 const LoginMainScreen = () => {
   const navigation = useNavigation();
@@ -20,25 +29,27 @@ const LoginMainScreen = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
-  const validateEmail = (email) => {
+  const validateEmail = email => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
   const handleLogin = async () => {
     let isValid = true;
-  
+
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       isValid = false;
     } else {
       setEmailError('');
     }
-  
+
     const trimmedPassword = password.trim();
-    console.log(trimmedPassword,"Trimmed", email)
+    console.log(trimmedPassword, 'Trimmed', email);
     if (password !== trimmedPassword) {
-      setPasswordError('Password should not contain leading or trailing spaces');
+      setPasswordError(
+        'Password should not contain leading or trailing spaces',
+      );
       isValid = false;
     } else if (password === '') {
       setPasswordError('Password cannot be empty');
@@ -46,20 +57,20 @@ const LoginMainScreen = () => {
     } else {
       setPasswordError('');
     }
-  
+
     if (!isValid) {
       return;
     }
-  
+
     try {
       const response = await axios.post(API_URL + '/user/login', {
         email: email,
         password: trimmedPassword,
-        role: "BUYER"
+        role: 'BUYER',
       });
-  
+
       console.log('Login response:', response.data);
-      if (response.data.message === "User logged in successfully") {
+      if (response.data.message === 'User logged in successfully') {
         navigation.navigate(ROUTES.MainTab, {
           screen: ROUTES.MainScreen,
           params: {
@@ -71,47 +82,51 @@ const LoginMainScreen = () => {
         setAlertMessage('Login failed. Please try again.');
         setAlertVisible(true);
       }
-  
     } catch (error) {
       console.error('Login error:', error.response);
       setAlertMessage('Please log in later');
       setAlertVisible(true);
     }
   };
-  
 
   return (
-    <ImageBackground source={IMAGES.loginimage} style={styles.background} resizeMode="cover">
+    <ImageBackground
+      source={IMAGES.loginimage}
+      style={styles.background}
+      resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.container}>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{flexDirection: 'row'}}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image source={ICONS.left} style={{ height: 24, width: 24, tintColor: 'white' }} />
+            <Image
+              source={ICONS.left}
+              style={{height: 24, width: 24, tintColor: 'white'}}
+            />
           </TouchableOpacity>
           <Text style={styles.backText}>Back</Text>
         </View>
 
-        <View style={{ marginTop: 150 }}>
-          <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Email ID</Text>
+        <View style={{marginTop: 150}}>
+          <Text style={{fontWeight: 'bold', fontSize: 15}}>Email ID</Text>
           <CustomTextInput
             placeholder="Email id"
             keyboardType="email-address"
             secureTextEntry={false}
             value={email}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setEmail(text);
               setEmailError('');
             }}
             validate={emailError !== ''}
             validationMessage={emailError}
           />
-          <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Password</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 15}}>Password</Text>
           <CustomTextInput
             placeholder="Password"
             keyboardType="default"
             secureTextEntry={!showPassword}
             value={password}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setPassword(text);
               setPasswordError('');
             }}
@@ -130,13 +145,15 @@ const LoginMainScreen = () => {
             borderColor={COLORS.DarkBlue}
           />
 
-          <TouchableOpacity onPress={() => navigation.navigate(ROUTES.ForgotEmail)}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(ROUTES.ForgotEmail)}>
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don't have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SignUp)}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(ROUTES.SignUp)}>
               <Text style={styles.registerText}> Register</Text>
             </TouchableOpacity>
           </View>
@@ -147,15 +164,13 @@ const LoginMainScreen = () => {
         transparent={true}
         visible={alertVisible}
         animationType="slide"
-        onRequestClose={() => setAlertVisible(false)}
-      >
+        onRequestClose={() => setAlertVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalMessage}>{alertMessage}</Text>
             <TouchableOpacity
               style={styles.modalButton}
-              onPress={() => setAlertVisible(false)}
-            >
+              onPress={() => setAlertVisible(false)}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>
           </View>
@@ -225,20 +240,20 @@ const styles = StyleSheet.create({
   modalMessage: {
     fontSize: 17,
     marginBottom: 20,
-    color:'black',
-    fontWeight:'bold',
-    textAlign:'center'
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   modalButton: {
     backgroundColor: '#1679AB',
     padding: 10,
-    width:'100%',
+    width: '100%',
     borderRadius: 5,
   },
   modalButtonText: {
     color: 'white',
     fontSize: 16,
-    textAlign:'center'
+    textAlign: 'center',
   },
 });
 
