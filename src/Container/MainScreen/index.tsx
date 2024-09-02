@@ -18,7 +18,7 @@ import { API_URL } from '../../config/API';
 import { COLORS } from '../../config/COLORS';
 
 const categories = [
-  { id: '1', title: ROUTES.Fabric, image: IMAGES.fabric, category: 'fabric' },
+  { id: '1', title: ROUTES.Fabric, image: IMAGES.images, category: 'fabric' },
   { id: '2', title: ROUTES.Yarn, image: IMAGES.yarn, category: 'yarn' },
 ];
 
@@ -26,7 +26,7 @@ const MainScreen = ({ navigation }) => {
   const route = useRoute();
   const { token, email } = route.params; // Extract token from route params
   console.log(token, 'Token from mainscreen', email);
-
+  const [alert,setAlert]=useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [product, setProduct] = useState([]);
@@ -77,7 +77,8 @@ const MainScreen = ({ navigation }) => {
       if (
         response.data.message === 'The selected category has no product to show'
       ) {
-        Alert.alert(' The selected category has no product to show ');
+        setAlert(true)
+        // Alert.alert(' The selected category has no product to show ');
       }
       if (response.data.message.length > 0) {
         const firstProduct = response.data.message[0];
@@ -141,9 +142,14 @@ const MainScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Home</Text>
+      
+        <View style={{flexDirection:'row'}}>
+           <Image source={IMAGES.ATImage} style={{height:45, width:45, }}/>
+             <Text style={styles.headerText}>Ashok Textile</Text>
+        </View>
+        <TouchableOpacity style={{marginTop:4, marginRight:4}} onPress={() => navigation.navigate(ROUTES.Settings)}>
         <Image
-          source={ICONS.logout}
+          source={ICONS.user}
           style={{
             height: 24,
             width: 24,
@@ -152,9 +158,12 @@ const MainScreen = ({ navigation }) => {
             marginTop: 3,
           }}
         />
+        </TouchableOpacity>
+        
       </View>
       <View style={styles.bodyContainer}>
         <Text style={styles.header}>Shop by Category</Text>
+        <View style={{flexDirection:'row'}}>
         <FlatList
           data={categories}
           renderItem={({ item }) => (
@@ -167,9 +176,11 @@ const MainScreen = ({ navigation }) => {
           )}
           keyExtractor={item => item.id}
         />
+        </View>
+        
       </View>
-      <Text style={{ color: 'black', fontWeight: 'bold', margin: 16, fontSize: 20 }}>Check your Orders here</Text>
-      <View style={[styles.card, { margin: 16 }]}>
+      {/* <Text style={{ color: 'black', fontWeight: 'bold', margin: 16, fontSize: 20 }}>Check your Orders here</Text> */}
+      {/* <View style={[styles.card, { margin: 16 }]}>
         <TouchableOpacity
           onPress={() => navigation.navigate(ROUTES.TrackListScreen)}
           style={{
@@ -187,9 +198,36 @@ const MainScreen = ({ navigation }) => {
           </Text>
           <Image source={ICONS.right} style={{ height: 30, width: 30 }} />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <CustomModal />
+    
+    <Modal
+      transparent={true}
+      animationType="slide"
+      visible={alert}
+      onRequestClose={() => {
+        setAlert(!alert);
+      }}>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContainer}>
+          {/* <Text style={styles.modalTitle}>Confirm</Text> */}
+
+          <Text style={styles.modalMessage}>
+          The selected category has no product to show
+          </Text>
+          <View style={styles.modalButtonContainer}>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setAlert(false)}>
+              <Text style={styles.modalButtonText}>Ok</Text>
+            </TouchableOpacity>
+          
+          </View>
+        </View>
+      </View>
+    </Modal>
+
     </View>
   );
 };
@@ -197,10 +235,10 @@ const MainScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF7FF',
+    // backgroundColor: '#EEF7FF',
   },
   headerContainer: {
-    backgroundColor: '#1679AB',
+    backgroundColor: COLORS.DarkBlue,
     padding: 20,
     marginBottom: 16,
     flexDirection: 'row',
@@ -211,6 +249,8 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: 'white',
     fontWeight: 'bold',
+    marginLeft:12,
+    marginTop:5
   },
   bodyContainer: {
     margin: 16,
@@ -220,30 +260,47 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 46,
     color: 'black',
+    textAlign:'center'
   },
+  // card: {
+  //   backgroundColor: 'white',
+  //   borderRadius: 10,
+  //   padding: 26,
+  //   marginBottom: 60,
+  //   // flexDirection: 'row',
+  //   // alignItems: 'center',
+  //   shadowColor: '#000',
+  //   shadowOpacity: 0.3,
+  //   shadowOffset: { width: 0, height: 1 },
+  //   shadowRadius: 5,
+  //   elevation: 3,
+  // },
   card: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 26,
-    marginBottom: 16,
-    flexDirection: 'row',
+    backgroundColor: '#ffffff',
+    padding: 20,
+    width:'70%',
+    borderRadius: 10, 
+    elevation: 5, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5, 
+    marginBottom: 16, 
+    justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 5,
-    elevation: 3,
+    alignSelf:'center'
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    marginRight: 16,
+    width: 150,
+    height: 150,
+    // borderRadius: 10,
+    // marginRight: 16,
   },
   cardText: {
     fontSize: 18,
     fontWeight: '500',
     color: 'black',
+    marginTop:12,
   },
   modalOverlay: {
     flex: 1,

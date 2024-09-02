@@ -20,6 +20,7 @@ import OTPInput from '../Container/OTP';
 import {ForgotEmail} from '../Container/ForgotEmail';
 import TrackingScreen from '../Container/TrackingScreen';
 import TrackListScreen from '../Container/TrackList';
+import Settings from '../Container/Setting';
 
 const Stack = createStackNavigator();
 
@@ -115,6 +116,11 @@ function Navigation() {
         <Stack.Screen
           name={ROUTES.PdfScreen}
           component={PdfScreen}
+          options={{headerShown: false}}
+        />
+         <Stack.Screen
+          name={ROUTES.Settings}
+          component={Settings}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

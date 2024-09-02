@@ -18,6 +18,7 @@ import axios from 'axios';
 import IMAGES from '../../Images/Image';
 import {API_URL} from '../../config/API';
 import {COLORS} from '../../config/COLORS';
+import Card from '../../Component/CustomModal';
 
 const LoginMainScreen = () => {
   const navigation = useNavigation();
@@ -28,7 +29,7 @@ const LoginMainScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-
+  const [modal,setModal] = useState(false)
   const validateEmail = email => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -38,7 +39,8 @@ const LoginMainScreen = () => {
     let isValid = true;
 
     if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address');
+      setAlertMessage('Please enter a valid email address')
+      // setEmailError('Please enter a valid email address');
       isValid = false;
     } else {
       setEmailError('');
@@ -47,18 +49,20 @@ const LoginMainScreen = () => {
     const trimmedPassword = password.trim();
     console.log(trimmedPassword, 'Trimmed', email);
     if (password !== trimmedPassword) {
-      setPasswordError(
-        'Password should not contain leading or trailing spaces',
-      );
+      setAlertMessage("Password should not contain leading or trailing spaces")
+      // setPasswordError('Password should not contain leading or trailing spaces');
       isValid = false;
     } else if (password === '') {
-      setPasswordError('Password cannot be empty');
+      setAlertMessage('Password cannot be empty')
+      // setPasswordError('Password cannot be empty');
       isValid = false;
     } else {
       setPasswordError('');
     }
 
     if (!isValid) {
+      setAlertMessage('Please Enter the fields.');
+      setAlertVisible(true);
       return;
     }
 
@@ -176,6 +180,27 @@ const LoginMainScreen = () => {
           </View>
         </View>
       </Modal>
+      {/* <Modal
+        transparent={true}
+        visible={alertVisible}
+        animationType="slide"
+        onRequestClose={() => setAlertVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <Card
+            title="Validation Error"
+            // image={require('./assets/error.png')} // Replace with your own image if needed
+            onPress={() => setAlertVisible(false)}
+          />
+          <Text style={styles.alertText}>{alertMessage}</Text>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setAlertVisible(false)}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal> */}
     </ImageBackground>
   );
 };
@@ -245,7 +270,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalButton: {
-    backgroundColor: '#1679AB',
+    backgroundColor:COLORS.DarkBlue,
     padding: 10,
     width: '100%',
     borderRadius: 5,
@@ -254,6 +279,27 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
+  },
+  // modalContainer: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: 'rgba(0,0,0,0.5)',
+  // },
+  alertText: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  closeButton: {
+    backgroundColor: '#fe7013',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

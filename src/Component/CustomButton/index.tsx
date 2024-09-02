@@ -16,13 +16,14 @@ const CustomButton = ({title, onPress, bgColor, textColor, borderColor}) => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 15,
+    paddingVertical: 10,
+    // paddingHorizontal: 40,
+    borderRadius: 5,
     alignItems: 'center',
     marginTop: 20,
     borderWidth: 2, // Add border width to make borderColor effective
-    width: '100%', // Set constant width
+    width: '50%', 
+    alignSelf:'center'// Set constant width
   },
   buttonText: {
     fontSize: 16,

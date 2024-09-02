@@ -6,6 +6,7 @@ import CustomButton from '../../Component/CustomButton';
 import {useNavigation} from '@react-navigation/core';
 import {ROUTES} from '../../Routes';
 import {COLORS} from '../../config/COLORS';
+import Header from '../../Component/Header';
 
 const Settings = () => {
   const [name, setName] = useState('Elakkiya S');
@@ -27,7 +28,7 @@ const Settings = () => {
           />
         </TouchableOpacity>
       </View> */}
-      <View style={{backgroundColor: '#1679AB', padding: 10}}>
+      {/* <View style={{backgroundColor: '#1679AB', padding: 10}}>
         <Text
           style={{
             color: 'white',
@@ -37,7 +38,8 @@ const Settings = () => {
           }}>
           Settings
         </Text>
-      </View>
+      </View> */}
+      <Header title={'Profile'}/>
       <View style={{padding: 20}}>
         <ProfileTextInput
           label="Full Name"
@@ -79,7 +81,7 @@ const Settings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF7FF',
+    // backgroundColor: '#EEF7FF',
   },
   profileImageContainer: {
     alignItems: 'center',

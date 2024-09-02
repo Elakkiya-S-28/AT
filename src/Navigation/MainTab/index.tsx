@@ -5,6 +5,7 @@ import {ROUTES} from '../../Routes';
 import MainScreen from '../../Container/MainScreen';
 import Settings from '../../Container/Setting';
 import ICONS from '../../Images/Icon'; // Import the icons
+import TrackListScreen from '../../Container/TrackList';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,14 +18,14 @@ const MainTab = () => {
           let iconName;
           if (route.name === ROUTES.MainScreen) {
             iconName = ICONS.home;
-          } else if (route.name === ROUTES.Settings) {
-            iconName = ICONS.profile;
+          } else if (route.name === ROUTES.TrackListScreen) {
+            iconName = ICONS.carttab;
           }
           return (
             <Image
               source={iconName}
               style={{
-                width: 23,
+                width: 25,
                 height: 25,
                 tintColor: focused ? '#1679AB' : '#222',
               }}
@@ -35,8 +36,8 @@ const MainTab = () => {
           let label;
           if (route.name === ROUTES.MainScreen) {
             label = 'Home';
-          } else if (route.name === ROUTES.Settings) {
-            label = 'Profile';
+          } else if (route.name === ROUTES.TrackListScreen) {
+            label = 'Cart';
           }
           return (
             <Text style={{color: focused ? '#1679AB' : '#222'}}>{label}</Text>
@@ -45,7 +46,9 @@ const MainTab = () => {
         headerShown: false,
       })}>
       <Tab.Screen name={ROUTES.MainScreen} component={MainScreen} />
-      <Tab.Screen name={ROUTES.Settings} component={Settings} />
+          <Tab.Screen name={ROUTES.TrackListScreen} component={TrackListScreen} />
+      {/* <Tab.Screen name={ROUTES.Settings} component={Settings} /> */}
+  
     </Tab.Navigator>
   );
 };

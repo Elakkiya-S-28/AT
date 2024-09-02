@@ -8,6 +8,8 @@ const ICONS = {
   password: require('../Icon/password/view.png'),
   hide: require('../Icon/hide/hide.png'),
   right:require('../Icon/rightarrow/right.png'),
+  user:require('../Icon/person/user.png'),
+  carttab:require('../Icon/cart/shopping-cart.png'),
 };
 
 export default ICONS;

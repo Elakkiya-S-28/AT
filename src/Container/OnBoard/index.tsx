@@ -1,23 +1,24 @@
-import React, {useState} from 'react';
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import {ROUTES} from '../../Routes';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { ROUTES } from '../../Routes';
 import IMAGES from '../../Images/Image';
+import { COLORS } from '../../config/COLORS';
 
-const OnBoard = ({navigation}) => {
+const OnBoard = ({ navigation }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
     {
-      // image: IMAGES.onboardimage1,
+      image: IMAGES.onboardimage1,
       content: 'Manufacturers of top notch eco-friendly yarns and fabrics',
     },
     {
-      // image: IMAGES.walkthrough,
+      image: IMAGES.walkthrough,
       content:
         'Innovative solutions with sustainable practices and high performance teams',
     },
     {
-      // image: IMAGES.onboardimage2,
+      image: IMAGES.onboardimage2,
       content: 'Steered thought leadership fostering inclusive growth',
     },
   ];
@@ -32,7 +33,7 @@ const OnBoard = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* <Image source={slides[currentSlide].image} style={styles.image} /> */}
+      <Image source={slides[currentSlide].image} style={styles.image} />
       <Text style={styles.content}>{slides[currentSlide].content}</Text>
 
       {/* Dots for slide indication */}
@@ -54,6 +55,8 @@ const OnBoard = ({navigation}) => {
           {currentSlide === slides.length - 1 ? 'Finish' : 'Next'}
         </Text>
       </TouchableOpacity>
+
+      <Text style={styles.skip} onPress={() => navigation.navigate(ROUTES.FirstScreen)}>Skip</Text>
     </View>
   );
 };
@@ -97,12 +100,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#0b2239',
     borderRadius: 10,
     margin: 16,
+    width: '40%',
+    alignSelf: 'center'
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
     alignSelf: 'center',
   },
+  skip: {
+    color: COLORS.DarkBlue,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+    textDecorationLine: 'underline',
+    fontSize: 15
+  }
 });
 
 export default OnBoard;

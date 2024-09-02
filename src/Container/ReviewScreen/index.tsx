@@ -399,6 +399,21 @@ const ReviewScreen = ({navigation}) => {
     setIsModalVisible(false);
     navigation.goBack();
   };
+  const handleDelete = async (orderId) => {
+        try {
+          await axios.delete(API_URL + `/order/deleteOrders?id=${orderId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          // Fetch updated order details after successful deletion
+          fetchOrderDetails();
+          Alert.alert('Success', 'Item deleted successfully');
+        } catch (error) {
+          console.error('Error deleting item:', error.response?.data || error.message);
+          Alert.alert('Error', 'Failed to delete item');
+        }
+      };
 
   return (
     <View style={styles.container}>
@@ -434,7 +449,7 @@ const ReviewScreen = ({navigation}) => {
               </View>
               <TouchableOpacity
                 style={styles.deleteButton}
-                // onPress={() => handleDelete(latestOrder.orderId)}
+                onPress={() => handleDelete(item.orderId)}
               >
                 <Image source={ICONS.delete} style={styles.deleteIcon} />
               </TouchableOpacity>
