@@ -1,10 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../../config/COLORS';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { COLORS } from '../../config/COLORS';  // Assuming COLORS is correctly imported from your project
+import ICONS from '../../Images/Icon';  // Assuming ICONS is correctly imported from your project
+import { useNavigation } from '@react-navigation/core';
 
-const SettingsHeader = ({title}) => {
+const SettingsHeader = ({ title }) => {
+  const navigation = useNavigation();
+  
   return (
     <View style={styles.headerContainer}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Image source={ICONS.left} style={styles.backIcon} />
+      </TouchableOpacity>
       <Text style={styles.headerText}>{title}</Text>
     </View>
   );
@@ -12,15 +19,27 @@ const SettingsHeader = ({title}) => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    // backgroundColor: '#1679AB',
-    backgroundColor:COLORS.DarkBlue,
-    padding: 10,
+    backgroundColor: COLORS.DarkBlue,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10,
+    padding: 5,
+  },
+  backIcon: {
+    tintColor: 'white',
+    height: 24,
+    width: 24,
   },
   headerText: {
     color: 'white',
     fontSize: 20,
-    padding: 10,
-    textAlign: 'center',
+    fontWeight:'bold'
   },
 });
 

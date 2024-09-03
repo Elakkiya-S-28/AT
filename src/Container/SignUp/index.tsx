@@ -238,7 +238,7 @@ const SignUp = () => {
           />
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate(ROUTES.Login)}>
+            <TouchableOpacity onPress={() => navigation.navigate(ROUTES.LoginMainScreen)}>
               <Text style={styles.registerText}> Login</Text>
             </TouchableOpacity>
           </View>

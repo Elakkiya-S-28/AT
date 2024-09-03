@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../Routes';
+import SettingsHeader from '../../Component/Header';
 
 const tracks = [
   { name: "Fabric", date: "2024-09-01", address: "123 Main St" },
@@ -37,9 +38,10 @@ const TrackListScreen = () => {
   return (
     <View style={styles.container}>
        
-        <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Your Orders</Text>
-        </View>
+        {/* <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Your Orders</Text> */}
+        {/* </View> */}
+        <SettingsHeader title={'Your Orders'}/>
         <View style={{margin:16}}>
         <FlatList 
         data={tracks}
@@ -58,7 +60,7 @@ const TrackListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF7FF',
+    // backgroundColor: '#EEF7FF',
   },
   trackItem: {
     flexDirection: 'row',

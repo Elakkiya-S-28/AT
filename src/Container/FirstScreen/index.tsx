@@ -11,7 +11,7 @@ const FirstScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
-        {/* <Image source={IMAGES.mainimg} style={styles.topImage} /> */}
+        <Image source={IMAGES.mainimg} style={styles.topImage} />
       </View>
 
       {/* <View style={styles.middleSection}>

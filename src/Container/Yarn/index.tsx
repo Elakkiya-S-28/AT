@@ -335,7 +335,7 @@ const Yarn = () => {
             source={ICONS.cart}
             style={{tintColor: 'white', height: 24, width: 24}}
           />
-          {cartItems.length > 0 && (
+            {cartItems.length > 0 && (
             <View style={styles.notification}>
               <Text style={styles.notificationText}>{cartItems.length}</Text>
             </View>
@@ -350,18 +350,18 @@ const Yarn = () => {
             renderItem={({item}) => (
               <View style={styles.card}>
                 <View style={styles.imageContainer}>
-                  <Text
+                  {/* <Text
                     style={{
                       color: 'black',
                       fontWeight: 'bold',
                       textAlign: 'justify',
                     }}>
                     {item.productId}
-                  </Text>
+                  </Text> */}
                   <Image source={IMAGES.yarn} style={styles.productImage} />
-                  <View style={styles.discountBox}>
+                  {/* <View style={styles.discountBox}>
                     <Text style={styles.discount}>30% OFF</Text>
-                  </View>
+                  </View> */}
                 </View>
                 <View style={styles.productInfo}>
                   <Text style={styles.productName}>{item.productName}</Text>
@@ -386,13 +386,21 @@ const Yarn = () => {
                     <Text style={styles.price}>
                       Rs. {item.gstPriceForBuyer}/kg
                     </Text>
-                    <TouchableOpacity
-                      style={styles.addButton}
-                      onPress={() => handleAddToCart(item.productId)}>
-                      <Text style={styles.addButtonText}>ADD</Text>
-                    </TouchableOpacity>
+                 
                   </View>
                 </View>
+                <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => handleAddToCart(item.productId)}>
+                <Text style={styles.addButtonText}>EDIT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => handleAddToCart(item.productId)}>
+                <Text style={styles.addButtonText}>ADD</Text>
+              </TouchableOpacity>
+            </View>
               </View>
             )}
             keyExtractor={item => item._id}
@@ -406,14 +414,15 @@ const Yarn = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF7FF',
+    // backgroundColor: '#EEF7FF',
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 16,
-    backgroundColor: '#1679AB',
+    // backgroundColor: '#1679AB',
+    backgroundColor:COLORS.DarkBlue,
     padding: 20,
   },
   header: {
@@ -447,9 +456,9 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   productImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
+    width: 100,
+    height: 100,
+    // borderRadius: 10,
     marginRight: 16,
   },
   discountBox: {
@@ -505,6 +514,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginTop:5,
+    marginBottom:5
   },
   addButtonText: {
     color: 'white',
@@ -526,6 +537,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  buttonContainer: {
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+    marginBottom:10
   },
 });
 

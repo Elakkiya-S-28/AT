@@ -498,14 +498,15 @@ const ReviewScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF7FF',
+    // backgroundColor: '#EEF7FF',
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: '#1679AB',
+    // backgroundColor: '#1679AB',
+    backgroundColor:COLORS.DarkBlue
   },
   header: {
     fontSize: 20,

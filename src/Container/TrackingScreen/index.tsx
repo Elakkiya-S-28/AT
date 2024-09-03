@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { COLORS } from '../../config/COLORS';
+import Header from '../../Component/Header';
 
 const TrackingScreen = () => {
   const [currentPosition, setCurrentPosition] = useState(2);
@@ -37,9 +38,10 @@ const TrackingScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      {/* <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Your Orders</Text>
-      </View>
+      </View> */}
+      <Header title={'Your Orders'}/>
       <View style={styles.stepIndicatorContainer}>
         <StepIndicator
           direction='vertical'
@@ -56,7 +58,7 @@ const TrackingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF7FF',
+    // backgroundColor: '#EEF7FF',
   },
   headerContainer: {
     backgroundColor: '#1679AB',

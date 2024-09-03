@@ -4,14 +4,16 @@ const IMAGES = {
   yarn: require('../Image/yarn/yarn.png'),
   image: require('../Image/image.jpeg'),
   loginimage: require('../Image/loginlogo.jpeg'),
-  walkthrough: require('../Image/onboard/image1.png'),
-  onboardImage: require('../Image/onboard/image2.png'),
-  onboardimg: require('../Image/onboard/image3.png'),
-  // mainimg: require('../Image/AT/image.png'),
+  walkthrough: require('../MainImage/compressed/IMG_4081.png'),
+  onboardImage: require('../MainImage/compressed/IMG_3965.png'),
+  onboardimg: require('../MainImage/compressed/IMG_3669.png'),
+  mainimg: require('../MainImage/compressed/IMG_3514.png'),
   ATImage: require('../Image/ATIMAGE/pic.png'),
-  onboardimage1: require('../Image/onboard/image4.png'),
-  onboardimage2: require('../Image/onboard/image5.png'),
+  onboardimage1: require('../MainImage/compressed/IMG_3965.png'),
+  onboardimage2: require('../MainImage/compressed/IMG_3941.png'),
   images:require('../Image/paperimage/image.png'),
+
+  image1:require('../MainImage/compressed/IMG_3738.png')
 };
 
 export default IMAGES;

@@ -4,6 +4,7 @@ import CustomButton from '../../Component/CustomButton';
 import {ROUTES} from '../../Routes';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {COLORS} from '../../config/COLORS';
+import SettingsHeader from '../../Component/Header';
 
 const OTPInput = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -42,8 +43,11 @@ const OTPInput = () => {
   };
 
   return (
+    <>
+     <SettingsHeader title={'Enter OTP'}/>
     <View style={styles.container}>
-      <Text style={styles.title}>Enter OTP</Text>
+      <Text style={styles.title}>Enter the OTP received in your mobile number</Text>
+     
       <View style={styles.otpContainer}>
         {otp.map((_, index) => (
           <TextInput
@@ -66,6 +70,7 @@ const OTPInput = () => {
         borderColor={COLORS.DarkBlue}
       />
     </View>
+    </>
   );
 };
 
@@ -77,8 +82,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 24,
-    color: '#1679AB',
+    fontSize: 18,
+    // color: '#1679AB',
+    color:'black',
     fontWeight: 'bold',
     marginBottom: 40,
   },
