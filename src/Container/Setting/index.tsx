@@ -1,68 +1,84 @@
-// Settings.js
-import React, {useState} from 'react';
-import {View, StyleSheet, Image, TouchableOpacity, Text} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
 import ProfileTextInput from '../../Component/ProfileTextInput';
 import CustomButton from '../../Component/CustomButton';
-import {useNavigation} from '@react-navigation/core';
-import {ROUTES} from '../../Routes';
-import {COLORS} from '../../config/COLORS';
+import { useNavigation, useRoute } from '@react-navigation/core';
+import { ROUTES } from '../../Routes';
+import { COLORS } from '../../config/COLORS';
 import Header from '../../Component/Header';
+import axios from 'axios';
+import { API_URL } from '../../config/API';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Settings = () => {
-  const [name, setName] = useState('Elakkiya S');
-  const [email, setEmail] = useState('selvarajanelakkiya@gmail.com');
-  const [password, setPassword] = useState('1234567');
-  const [phoneNumber, setPhoneNumber] = useState('9876543210');
+  const [data, setData] = useState({
+    name: '',
+    email: '',
+    mobile: ''
+  });
+  const route = useRoute();
+  const { emails, token } = route.params;
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const profile = async () => {
+      try {
+        if (!token) {
+          console.error("Token is not available");
+          return;
+        }
+
+        console.log(emails, "Emails", API_URL);
+        const response = await axios.post(
+          `${API_URL}/user/getUserDetails?email=${emails}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log(response, "RESPONSE SETTINGS");
+        console.log(response.data, "RESPONSE DATA SETTINGS");
+
+        if (response.data.status === 200) {
+          setData(response.data.message);
+        } else {
+          console.error("Error in response data");
+        }
+      } catch (error) {
+        console.error(error.response?.data || error.message, "ERROR FETCHING PROFILE DATA");
+      }
+    };
+
+    if (emails && token) {
+      profile();
+    }
+  }, [emails, token]);
+  console.log(data.mobile,"MOBILE")
   return (
     <View style={styles.container}>
-      {/* <View style={styles.profileImageContainer}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/100' }} // Replace with the actual image URL
-          style={styles.profileImage}
-        />
-        <TouchableOpacity style={styles.editIcon}>
-          <Image
-            source={{ uri: 'https://via.placeholder.com/20' }} // Replace with the actual edit icon URL
-            style={styles.editIconImage}
-          />
-        </TouchableOpacity>
-      </View> */}
-      {/* <View style={{backgroundColor: '#1679AB', padding: 10}}>
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 20,
-            padding: 10,
-            textAlign: 'center',
-          }}>
-          Settings
-        </Text>
-      </View> */}
-      <Header title={'Profile'}/>
-      <View style={{padding: 20}}>
+      <Header title={'Profile'} />
+      <View style={{ padding: 20 }}>
         <ProfileTextInput
           label="Full Name"
-          value={name}
-          onChangeText={setName}
+          value={data.name}
           secureTextEntry={false}
         />
         <ProfileTextInput
           label="E-mail"
-          value={email}
-          onChangeText={setEmail}
+          value={data.email}
           secureTextEntry={false}
         />
         <ProfileTextInput
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-        />
-        <ProfileTextInput
           label="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
+          value={data.mobile.toString()}
+          secureTextEntry={false}
+        />
+         <ProfileTextInput
+          label="Address"
+          value={data.address}
           secureTextEntry={false}
         />
         <CustomButton
@@ -73,7 +89,6 @@ const Settings = () => {
           borderColor={COLORS.DarkBlue}
         />
       </View>
-      {/* Add more inputs as needed */}
     </View>
   );
 };

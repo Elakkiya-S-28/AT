@@ -1,26 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../Routes';
 import SettingsHeader from '../../Component/Header';
-
-const tracks = [
-  { name: "Fabric", date: "2024-09-01", address: "123 Main St" },
-  { name: "Yarn", date: "2024-09-02", address: "456 Elm St" },
-  { name: "Yarn", date: "2024-09-03", address: "789 Pine St" },
-  { name: "Fabric", date: "2024-09-04", address: "101 Maple St" }
-]; // Add your track details here
+import { API_URL } from '../../config/API';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TrackListScreen = () => {
+  const [orders, setOrders] = useState([]);
   const navigation = useNavigation();
 
-  const handleTrackPress = (track) => {
-    navigation.navigate(ROUTES.TrackingScreen, { track });
+  const fetchOrderDetails = async () => {
+    try {
+      const email = await AsyncStorage.getItem('email');
+      const token = await AsyncStorage.getItem('token');
+      const payload = { status: 'IN-CART', email: email };
+
+      const response = await axios.post(
+        API_URL + '/user/getOrderDetails',
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      setOrders(response.data.message);
+    } catch (error) {
+      console.error(
+        'Error fetching order details:',
+        error.response?.data || error.message,
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchOrderDetails();
+  }, []);
+
+  const handleTrackPress = (order) => {
+    navigation.navigate(ROUTES.TrackingScreen, { order });
   };
 
   const renderTrackItem = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.trackItem} 
+    <TouchableOpacity
+      style={styles.trackItem}
       onPress={() => handleTrackPress(item)}
     >
       {/* <Image
@@ -28,31 +55,27 @@ const TrackListScreen = () => {
         style={styles.trackImage}
       /> */}
       <View style={styles.trackContent}>
-        <Text style={styles.trackName}>{item.name}</Text>
-        <Text style={styles.trackDate}>Date: {item.date}</Text>
-        <Text style={styles.trackAddress}>Delivered to: {item.address}</Text>
+        <Text style={styles.trackName}>{item.category}</Text>
+        <Text style={styles.trackDate}>Date: {new Date(item.createdOn).toLocaleDateString()}</Text>
+        <Text style={styles.trackAddress}>Order ID: {item.orderId}</Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-       
-        {/* <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Your Orders</Text> */}
-        {/* </View> */}
-        <SettingsHeader title={'Your Orders'}/>
-        <View style={{margin:16}}>
-        <FlatList 
-        data={tracks}
-        renderItem={renderTrackItem}
-        keyExtractor={(item, index) => index.toString()}
-      />
-     
-        </View>
-       
-    
-     
+      <SettingsHeader title={'Your Orders'} />
+      <View style={{ margin: 16 }}>
+        <FlatList
+          data={orders}
+          renderItem={renderTrackItem}
+          keyExtractor={(item) => item.orderId}
+          // Optional: Add debug props
+          ListEmptyComponent={<Text style={{ alignSelf: 'center', justifyContent: 'center', fontSize: 18, color: 'black' }}>No orders available</Text>} // Show a message if there are no orders
+          contentContainerStyle={{ flexGrow: 1 }}
+        />
+
+      </View>
     </View>
   );
 };
@@ -60,7 +83,6 @@ const TrackListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#EEF7FF',
   },
   trackItem: {
     flexDirection: 'row',
@@ -74,7 +96,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    marginTop:5
+    marginTop: 5
   },
   trackImage: {
     width: 80,
@@ -88,19 +110,19 @@ const styles = StyleSheet.create({
   trackName: {
     fontSize: 18,
     color: '#333',
-    fontWeight:'bold',
+    fontWeight: 'bold',
     marginBottom: 4,
   },
   trackDate: {
     fontSize: 14,
     color: '#666',
-    fontWeight:'600'
+    fontWeight: '600'
   },
   trackAddress: {
     fontSize: 14,
     color: '#666',
     marginTop: 4,
-    fontWeight:'400'
+    fontWeight: '400'
   },
   headerContainer: {
     backgroundColor: '#1679AB',

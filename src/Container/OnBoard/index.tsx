@@ -13,12 +13,12 @@ const OnBoard = ({ navigation }) => {
       content: 'Manufacturers of top notch eco-friendly yarns and fabrics',
     },
     {
-      image: IMAGES.walkthrough,
+      image: IMAGES.onboardimage2,
       content:
         'Innovative solutions with sustainable practices and high performance teams',
     },
     {
-      image: IMAGES.onboardimage2,
+      image: IMAGES. onboardimg,
       content: 'Steered thought leadership fostering inclusive growth',
     },
   ];

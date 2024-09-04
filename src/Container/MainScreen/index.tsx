@@ -147,7 +147,7 @@ const MainScreen = ({ navigation }) => {
            <Image source={IMAGES.ATImage} style={{height:45, width:45, }}/>
              <Text style={styles.headerText}>Ashok Textile</Text>
         </View>
-        <TouchableOpacity style={{marginTop:4, marginRight:4}} onPress={() => navigation.navigate(ROUTES.Settings)}>
+        <TouchableOpacity style={{marginTop:4, marginRight:4}} onPress={() => navigation.navigate(ROUTES.Settings,{emails:email, token:token})}>
         <Image
           source={ICONS.user}
           style={{

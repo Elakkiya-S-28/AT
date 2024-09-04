@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,14 +11,14 @@ import {
 } from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import CustomTextInput from '../../Component/CustomTextInput';
-import {useNavigation} from '@react-navigation/core';
-import {ROUTES} from '../../Routes';
+import { useNavigation } from '@react-navigation/core';
+import { ROUTES } from '../../Routes';
 import ICONS from '../../Images/Icon';
 import axios from 'axios';
 import IMAGES from '../../Images/Image';
-import {API_URL} from '../../config/API';
-import {COLORS} from '../../config/COLORS';
-import Card from '../../Component/CustomModal';
+import { API_URL } from '../../config/API';
+import { COLORS } from '../../config/COLORS';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginMainScreen = () => {
   const navigation = useNavigation();
@@ -29,57 +29,70 @@ const LoginMainScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-  const [modal,setModal] = useState(false)
+
+  // Validate email
   const validateEmail = email => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
+  // Store email in AsyncStorage
+  useEffect(() => {
+    const storeEmail = async () => {
+      try {
+        if (email) {
+          await AsyncStorage.setItem('email', email);
+          console.log('Email stored in AsyncStorage:', email);
+        }
+      } catch (error) {
+        console.error('Error storing email:', error);
+      }
+    };
+    storeEmail();
+  }, [email]);
+
+  // Handle login
   const handleLogin = async () => {
     let isValid = true;
 
     if (!validateEmail(email)) {
-      setAlertMessage('Please enter a valid email address')
-      // setEmailError('Please enter a valid email address');
+      setEmailError('Please enter a valid email address');
       isValid = false;
     } else {
       setEmailError('');
     }
 
     const trimmedPassword = password.trim();
-    console.log(trimmedPassword, 'Trimmed', email);
     if (password !== trimmedPassword) {
-      setAlertMessage("Password should not contain leading or trailing spaces")
-      // setPasswordError('Password should not contain leading or trailing spaces');
+      setPasswordError('Password should not contain leading or trailing spaces');
       isValid = false;
     } else if (password === '') {
-      setAlertMessage('Password cannot be empty')
-      // setPasswordError('Password cannot be empty');
+      setPasswordError('Password cannot be empty');
       isValid = false;
     } else {
       setPasswordError('');
     }
 
     if (!isValid) {
-      setAlertMessage('Please Enter the fields.');
+      setAlertMessage('Please Enter the fields correctly.');
       setAlertVisible(true);
       return;
     }
 
     try {
-      const response = await axios.post(API_URL + '/user/login', {
-        email: email,
+      const response = await axios.post(`${API_URL}/user/login`, {
+        email,
         password: trimmedPassword,
         role: 'BUYER',
       });
-
       console.log('Login response:', response.data);
+       await AsyncStorage.setItem('token',response.data.token)
       if (response.data.message === 'User logged in successfully') {
         navigation.navigate(ROUTES.MainTab, {
           screen: ROUTES.MainScreen,
           params: {
             token: response.data.token,
-            email: email,
+            email,
           },
         });
       } else {
@@ -100,18 +113,18 @@ const LoginMainScreen = () => {
       resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.container}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Image
               source={ICONS.left}
-              style={{height: 24, width: 24, tintColor: 'white'}}
+              style={{ height: 24, width: 24, tintColor: 'white' }}
             />
           </TouchableOpacity>
           <Text style={styles.backText}>Back</Text>
         </View>
 
-        <View style={{marginTop: 150}}>
-          <Text style={{fontWeight: 'bold', fontSize: 15}}>Email ID</Text>
+        <View style={{ marginTop: 150 }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Email ID</Text>
           <CustomTextInput
             placeholder="Email id"
             keyboardType="email-address"
@@ -124,7 +137,7 @@ const LoginMainScreen = () => {
             validate={emailError !== ''}
             validationMessage={emailError}
           />
-          <Text style={{fontWeight: 'bold', fontSize: 15}}>Password</Text>
+          <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Password</Text>
           <CustomTextInput
             placeholder="Password"
             keyboardType="default"
@@ -180,27 +193,6 @@ const LoginMainScreen = () => {
           </View>
         </View>
       </Modal>
-      {/* <Modal
-        transparent={true}
-        visible={alertVisible}
-        animationType="slide"
-        onRequestClose={() => setAlertVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <Card
-            title="Validation Error"
-            // image={require('./assets/error.png')} // Replace with your own image if needed
-            onPress={() => setAlertVisible(false)}
-          />
-          <Text style={styles.alertText}>{alertMessage}</Text>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => setAlertVisible(false)}
-          >
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal> */}
     </ImageBackground>
   );
 };
@@ -270,7 +262,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalButton: {
-    backgroundColor:COLORS.DarkBlue,
+    backgroundColor: COLORS.DarkBlue,
     padding: 10,
     width: '100%',
     borderRadius: 5,
@@ -279,27 +271,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
-  },
-  // modalContainer: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: 'rgba(0,0,0,0.5)',
-  // },
-  alertText: {
-    color: 'black',
-    fontSize: 16,
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  closeButton: {
-    backgroundColor: '#fe7013',
-    padding: 10,
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: '#fff',
-    fontSize: 16,
   },
 });
 

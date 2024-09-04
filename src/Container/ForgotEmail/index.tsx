@@ -52,7 +52,7 @@ export const ForgotEmail = () => {
   };
   return (
     <View style={styles.container}>
-      <Image source={IMAGES.onboardimg} style={{height: 300, width: '100%'}} />
+      <Image source={IMAGES.onboardimage2} style={{height: 300, width: '100%'}} />
       <Text style={styles.title}>Forgot Password</Text>
       <View style={{margin: 16}}>
         <Text style={{color: 'black', fontSize: 18, fontWeight: '600'}}>

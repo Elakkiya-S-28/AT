@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { COLORS } from '../../config/COLORS';
 import Header from '../../Component/Header';
+import { useRoute } from '@react-navigation/native';
 
 const TrackingScreen = () => {
-  const [currentPosition, setCurrentPosition] = useState(2);
-  const labels = ["Order Confirmed", "Shipped", "Out of Delivery", "Delivery"];
+  const route = useRoute();
+  const { order } = route.params;
+
+  const [currentPosition, setCurrentPosition] = useState(0);
+  const [labels, setLabels] = useState([]);
+
+  useEffect(() => {
+    if (order?.tracking?.length) {
+      const trackingInfo = order.tracking[0]; 
+
+      // Extract city names and create labels from trackingInfo
+      const cities = Object.keys(trackingInfo).sort(); // Ensure correct order if needed
+      setLabels(cities.map(city => city.charAt(0).toUpperCase() + city.slice(1)));
+
+      // Determine the current position based on trackingInfo
+      const position = cities.findIndex(city => trackingInfo[city] === true);
+      setCurrentPosition(position === -1 ? 0 : position);
+    }
+  }, [order]);
 
   const customStyles = {
     stepIndicatorSize: 25,
@@ -32,23 +50,16 @@ const TrackingScreen = () => {
     currentStepLabelColor: COLORS.DarkBlue
   };
 
-  const onPageChange = (position) => {
-    setCurrentPosition(position);
-  };
-
   return (
     <View style={styles.container}>
-      {/* <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Your Orders</Text>
-      </View> */}
-      <Header title={'Your Orders'}/>
+      <Header title={'Order Tracking'} />
       <View style={styles.stepIndicatorContainer}>
         <StepIndicator
           direction='vertical'
           customStyles={customStyles}
           currentPosition={currentPosition}
           labels={labels}
-          stepCount={labels.length} 
+          stepCount={labels.length}
         />
       </View>
     </View>
@@ -58,26 +69,11 @@ const TrackingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#EEF7FF',
-  },
-  headerContainer: {
-    backgroundColor: '#1679AB',
-    padding: 20,
-    marginBottom: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  headerText: {
-    textAlign: 'center',
-    fontSize: 22,
-    color: 'white',
-    fontWeight: 'bold',
   },
   stepIndicatorContainer: {
     flex: 1,
     justifyContent: 'center',
-    // alignItems: 'flex-end', // Align to the right
-    paddingHorizontal: 20, 
+    paddingHorizontal: 20,
   },
 });
 

@@ -25,7 +25,7 @@ const Fabric = () => {
   const [quantities, setQuantities] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [openCheckoutModal, setOpenCheckoutModal] = useState(false);
-
+  const [addOrder,setAddOrder]=useState('')
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       setQuantities({});
@@ -149,7 +149,7 @@ const Fabric = () => {
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => handleAddToCart(item.productId)}>
+                >
                 <Text style={styles.addButtonText}>EDIT</Text>
               </TouchableOpacity>
               <TouchableOpacity
