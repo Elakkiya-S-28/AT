@@ -147,11 +147,11 @@ const Fabric = () => {
               <Text style={styles.price}>Rs. {item.gstPriceForBuyer}/kg</Text>
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.addButton}
                 >
                 <Text style={styles.addButtonText}>EDIT</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 style={styles.addButton}
                 onPress={() => handleAddToCart(item.productId)}>

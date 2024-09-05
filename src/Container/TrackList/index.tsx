@@ -50,10 +50,6 @@ const TrackListScreen = () => {
       style={styles.trackItem}
       onPress={() => handleTrackPress(item)}
     >
-      {/* <Image
-        source={{ uri: 'https://via.placeholder.com/80' }} // Replace with your image URL
-        style={styles.trackImage}
-      /> */}
       <View style={styles.trackContent}>
         <Text style={styles.trackName}>{item.category}</Text>
         <Text style={styles.trackDate}>Date: {new Date(item.createdOn).toLocaleDateString()}</Text>
@@ -65,17 +61,14 @@ const TrackListScreen = () => {
   return (
     <View style={styles.container}>
       <SettingsHeader title={'Your Orders'} />
-      <View style={{ margin: 16 }}>
-        <FlatList
-          data={orders}
-          renderItem={renderTrackItem}
-          keyExtractor={(item) => item.orderId}
-          // Optional: Add debug props
-          ListEmptyComponent={<Text style={{ alignSelf: 'center', justifyContent: 'center', fontSize: 18, color: 'black' }}>No orders available</Text>} // Show a message if there are no orders
-          contentContainerStyle={{ flexGrow: 1 }}
-        />
-
-      </View>
+      <FlatList
+        data={orders}
+        renderItem={renderTrackItem}
+        keyExtractor={(item) => item.orderId}
+        ListEmptyComponent={<Text style={styles.emptyMessage}>No orders available</Text>}
+        contentContainerStyle={orders.length === 0 ? styles.emptyListContainer : null} // Adjust container when no orders
+        showsVerticalScrollIndicator={false} // Optional: Hide the scroll indicator for better UI
+      />
     </View>
   );
 };
@@ -83,6 +76,7 @@ const TrackListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // padding: 16,
   },
   trackItem: {
     flexDirection: 'row',
@@ -91,18 +85,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 12,
     backgroundColor: '#f9f9f9',
-    elevation: 1, // Add shadow for Android
-    shadowColor: '#000', // Add shadow for iOS
+    elevation: 1,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    marginTop: 5
-  },
-  trackImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    marginRight: 16,
+    marginTop: 5,
+    margin:16
   },
   trackContent: {
     flex: 1,
@@ -116,26 +105,24 @@ const styles = StyleSheet.create({
   trackDate: {
     fontSize: 14,
     color: '#666',
-    fontWeight: '600'
+    fontWeight: '600',
   },
   trackAddress: {
     fontSize: 14,
     color: '#666',
     marginTop: 4,
-    fontWeight: '400'
+    fontWeight: '400',
   },
-  headerContainer: {
-    backgroundColor: '#1679AB',
-    padding: 20,
-    marginBottom: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  emptyMessage: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    fontSize: 18,
+    color: 'black',
+    marginTop: 20,
   },
-  headerText: {
-    textAlign: 'center',
-    fontSize: 22,
-    color: 'white',
-    fontWeight: 'bold',
+  emptyListContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
 });
 

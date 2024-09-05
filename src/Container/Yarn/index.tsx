@@ -390,11 +390,11 @@ const Yarn = () => {
                   </View>
                 </View>
                 <View style={styles.buttonContainer}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.addButton}
                 onPress={() => handleAddToCart(item.productId)}>
                 <Text style={styles.addButtonText}>EDIT</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 style={styles.addButton}
                 onPress={() => handleAddToCart(item.productId)}>
