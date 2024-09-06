@@ -37,19 +37,19 @@ const LoginMainScreen = () => {
   };
 
   // Store email in AsyncStorage
-  useEffect(() => {
-    const storeEmail = async () => {
-      try {
-        if (email) {
-          await AsyncStorage.setItem('email', email);
-          console.log('Email stored in AsyncStorage:', email);
-        }
-      } catch (error) {
-        console.error('Error storing email:', error);
-      }
-    };
-    storeEmail();
-  }, [email]);
+  // useEffect(() => {
+  //   const storeEmail = async () => {
+  //     try {
+  //       if (email) {
+  //         await AsyncStorage.setItem('email', email);
+  //         console.log('Email stored in AsyncStorage:', email);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error storing email:', error);
+  //     }
+  //   };
+  //   storeEmail();
+  // }, [email]);
 
   // Handle login
   const handleLogin = async () => {
@@ -86,8 +86,10 @@ const LoginMainScreen = () => {
         role: 'BUYER',
       });
       console.log('Login response:', response.data);
-       await AsyncStorage.setItem('token',response.data.token)
+      //  await AsyncStorage.setItem('token',response.data.token)
       if (response.data.message === 'User logged in successfully') {
+        // await AsyncStorage.setItem('token',response.data.token),
+        // await AsyncStorage.setItem('email',email)
         navigation.navigate(ROUTES.MainTab, {
           screen: ROUTES.MainScreen,
           params: {

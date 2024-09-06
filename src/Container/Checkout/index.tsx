@@ -9,7 +9,7 @@ import SettingsHeader from '../../Component/Header';
 const Checkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {token, items, totalQuantity, totalItems, totalPrice, category, email} =
+  const {token, items, totalQuantity, totalItems, totalPrice, category, email,products} =
     route.params;
   const {remainingTime, setRemainingTime} = useTimer();
 

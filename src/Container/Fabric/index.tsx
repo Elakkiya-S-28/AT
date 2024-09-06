@@ -194,7 +194,7 @@ const Fabric = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalMessage}>
-              Something went wrong while adding to cart. Please try again later.
+              Please Add the Product
             </Text>
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity
@@ -317,6 +317,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 20,
     textAlign: 'center',
+    color:'black',
+    fontWeight:'bold'
   },
   modalButtonContainer: {
     flexDirection: 'row',

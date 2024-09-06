@@ -6,10 +6,13 @@ import MainScreen from '../../Container/MainScreen';
 import Settings from '../../Container/Setting';
 import ICONS from '../../Images/Icon'; // Import the icons
 import TrackListScreen from '../../Container/TrackList';
+import { useRoute } from '@react-navigation/core';
 
 const Tab = createBottomTabNavigator();
 
 const MainTab = () => {
+  const route = useRoute(); 
+  const { token, email } = route.params || {}; 
   return (
     <Tab.Navigator
       initialRouteName={ROUTES.MainScreen}
@@ -45,8 +48,16 @@ const MainTab = () => {
         },
         headerShown: false,
       })}>
-      <Tab.Screen name={ROUTES.MainScreen} component={MainScreen} />
-          <Tab.Screen name={ROUTES.TrackListScreen} component={TrackListScreen} />
+      <Tab.Screen
+        name={ROUTES.MainScreen}
+        component={MainScreen}
+        initialParams={{ token, email }} // Pass token and email here
+      />
+      <Tab.Screen
+        name={ROUTES.TrackListScreen}
+        component={TrackListScreen}
+        initialParams={{ token, email }} // Pass token and email here as well
+      />
       {/* <Tab.Screen name={ROUTES.Settings} component={Settings} /> */}
   
     </Tab.Navigator>

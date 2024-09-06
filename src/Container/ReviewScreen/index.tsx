@@ -302,7 +302,7 @@ const ReviewScreen = ({navigation}) => {
   const {token, email, cartItems, category} = route.params;
   const [orderDetails, setOrderDetails] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  console.log(token,"TK")
   const fetchAddOrder = async () => {
     try {
       const response = await axios.post(
@@ -341,14 +341,7 @@ const ReviewScreen = ({navigation}) => {
         },
       );
 
-      console.log(response.data.message, 'Fetched Orders');
-      response.data.message.forEach(order => {
-        console.log(`Order ID: ${order.orderId}`);
-        order.products.forEach((product, index) => {
-          console.log(`Product ${index + 1}:`, product);
-        });
-      });
-
+      console.log(response.data.message, 'Fetched Orders..........');
       setOrderDetails(response.data.message);
     } catch (error) {
       console.error(
@@ -373,7 +366,7 @@ const ReviewScreen = ({navigation}) => {
           orderDetails[0],
         )
       : {};
-
+  console.log(orderDetails, 'ORDER DETAILS');
   const products = latestOrder.products || [];
   const totalQuantity = products.reduce(
     (sum, product) => sum + product.quantity,
@@ -390,6 +383,7 @@ const ReviewScreen = ({navigation}) => {
       totalItems: 1,
       category,
       email,
+      products
     });
   };
 
@@ -401,34 +395,36 @@ const ReviewScreen = ({navigation}) => {
     setIsModalVisible(false);
     navigation.goBack();
   };
+
   const handleDelete = async (orderId) => {
-        try {
-          await axios.delete(API_URL + `/order/deleteOrders?id=${orderId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          // Fetch updated order details after successful deletion
-          fetchOrderDetails();
-          Alert.alert('Success', 'Item deleted successfully');
-        } catch (error) {
-          console.error('Error deleting item:', error.response?.data || error.message);
-          Alert.alert('Error', 'Failed to delete item');
-        }
-      };
+    try {
+      const response = await axios.delete(API_URL + `/order/deleteOrders?id=${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data, "DELETE");
+      setOrderDetails(prevOrders =>
+        prevOrders.filter(order => order.orderId !== orderId)
+      );
+  
+      Alert.alert('Success', 'Item deleted successfully');
+    } catch (error) {
+      console.error('Error deleting item:', error.response?.data || error.message);
+      Alert.alert('Error', 'Failed to delete item');
+    }
+  };
+  
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={handleBackPress}>
-          <Image
-            source={ICONS.left}
-            style={{tintColor: 'white', height: 24, width: 24}}
-          />
+          <Image source={ICONS.left} style={{tintColor: 'white', height: 24, width: 24}} />
         </TouchableOpacity>
         <Text style={styles.header}>Review Basket</Text>
         <Text style={styles.itemCount}>
-          {latestOrder.orderId ? '1 item' : '0 items'}
+          {products.length > 0 ? `${products.length} item(s)` : '0 items'}
         </Text>
       </View>
       {products.length > 0 ? (
@@ -443,16 +439,13 @@ const ReviewScreen = ({navigation}) => {
                 </View>
               </View>
               <View style={styles.productInfo}>
-                <Text style={styles.productName}>
-                  Product Name: {item.productName}
-                </Text>
+                <Text style={styles.productName}>Product Name: {item.productName}</Text>
                 <Text style={styles.quantity}>Quantity: {item.quantity}</Text>
                 <Text style={styles.price}>Price: ₹ {item.price}</Text>
               </View>
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => handleDelete(item.orderId)}
-              >
+                onPress={() => handleDelete(latestOrder.orderId)}>
                 <Image source={ICONS.delete} style={styles.deleteIcon} />
               </TouchableOpacity>
             </View>
@@ -464,12 +457,8 @@ const ReviewScreen = ({navigation}) => {
       )}
       <View style={styles.fixedFooter}>
         <Text style={styles.totalPrice}>Total Price: ₹ {totalPrice}</Text>
-        <Text style={styles.totalQuantity}>
-          Total Quantity: {totalQuantity}
-        </Text>
-        <TouchableOpacity
-          style={styles.checkoutButton}
-          onPress={navigateToCheckout}>
+        <Text style={styles.totalQuantity}>Total Quantity: {totalQuantity}</Text>
+        <TouchableOpacity style={styles.checkoutButton} onPress={navigateToCheckout}>
           <Text style={styles.checkoutButtonText}>Checkout</Text>
         </TouchableOpacity>
       </View>
@@ -481,9 +470,7 @@ const ReviewScreen = ({navigation}) => {
               Are you sure you want to go back? Your order will be erased.
             </Text>
             <View style={styles.modalButtons}>
-              <Pressable
-                style={styles.modalButton}
-                onPress={() => setIsModalVisible(false)}>
+              <Pressable style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
                 <Text style={styles.modalButtonText}>Cancel</Text>
               </Pressable>
               <Pressable style={styles.modalButton} onPress={handleConfirmBack}>
@@ -508,7 +495,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     // backgroundColor: '#1679AB',
-    backgroundColor:COLORS.DarkBlue
+    backgroundColor: COLORS.DarkBlue
   },
   header: {
     fontSize: 20,

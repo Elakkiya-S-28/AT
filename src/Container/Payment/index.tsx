@@ -276,6 +276,7 @@ import SettingsHeader from '../../Component/Header';
 import {ROUTES} from '../../Routes';
 import {API_URL} from '../../config/API';
 import { COLORS } from '../../config/COLORS';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Payment = () => {
   const navigation = useNavigation();
@@ -307,9 +308,10 @@ const Payment = () => {
           'Content-Type': 'application/json',
         },
       });
-      
+   
     console.log(response.data,"RESPONSE DATA IN PAYMENT")
     if (response.data.message.toLowerCase() === 'order status updated successfully') {
+      // await AsyncStorage.setItem('token',token),
       setModalOpen(true);
     } else {
       Alert.alert('Error', 'Failed to update order status.');
@@ -402,7 +404,7 @@ const Payment = () => {
         onRequestClose={() => setModalOpen(!modalOpen)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Order status updated successfully!!!</Text>
+            <Text style={styles.modalText}>Order updated successfully!!!</Text>
             <TouchableOpacity style={styles.modalButton} onPress={handleNav}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>
