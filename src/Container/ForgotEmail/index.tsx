@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {SafeAreaView, View, Text, StyleSheet, Image, Alert} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {SafeAreaView, View, Text, StyleSheet, Image} from 'react-native';
 import CustomTextInput from '../../Component/CustomTextInput';
 import CustomButton from '../../Component/CustomButton';
-import {useNavigation} from '@react-navigation/core';
+import {useNavigation, useFocusEffect} from '@react-navigation/core';
 import {ROUTES} from '../../Routes';
 import {COLORS} from '../../config/COLORS';
 import IMAGES from '../../Images/Image';
@@ -14,8 +14,16 @@ export const ForgotEmail = () => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
 
+  // Reset the form state when the screen comes back into focus
+  useFocusEffect(
+    useCallback(() => {
+      // Reset email and emailError when the screen is focused
+      setEmail('');
+      setEmailError('');
+    }, [])
+  );
+
   const validateEmail = email => {
-    // Regular expression for validating an Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -31,8 +39,6 @@ export const ForgotEmail = () => {
         const response = await axios.get(
           API_URL + `/user/getOTP?email=${email}`,
         );
-        console.log(response, 'REsponse');
-        console.log(response.data, 'RESPONSE of DATA in ForgotEMail');
         if (response.data.status === 200) {
           navigation.navigate(ROUTES.OTPInput, {email: email});
         }
@@ -41,6 +47,7 @@ export const ForgotEmail = () => {
       }
     }
   };
+
   const getEmailBorderColor = () => {
     if (emailError) {
       return 'red';
@@ -50,6 +57,7 @@ export const ForgotEmail = () => {
       return '#ccc';
     }
   };
+
   return (
     <View style={styles.container}>
       <Image source={IMAGES.onboardimage2} style={{height: 300, width: '100%'}} />

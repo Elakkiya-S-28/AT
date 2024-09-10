@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react';
-import {View, TextInput, StyleSheet, Text, Button} from 'react-native';
+import {View, TextInput, StyleSheet, Text} from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import {ROUTES} from '../../Routes';
 import {useNavigation, useRoute} from '@react-navigation/core';
@@ -8,6 +8,7 @@ import SettingsHeader from '../../Component/Header';
 
 const OTPInput = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [errorMessage, setErrorMessage] = useState('');
   const refs = useRef([]);
   const navigation = useNavigation();
   const route = useRoute();
@@ -18,6 +19,7 @@ const OTPInput = () => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
+    setErrorMessage(''); // Clear error when typing
 
     if (value && index < otp.length - 1) {
       refs.current[index + 1].focus();
@@ -35,6 +37,10 @@ const OTPInput = () => {
 
   const handleSubmit = () => {
     const otpCode = otp.join('');
+    if (otpCode.length < 6) {
+      setErrorMessage('Please enter the full OTP.');
+      return;
+    }
     console.log('OTP Entered:', otpCode);
     navigation.navigate(ROUTES.ForgotPassword, {
       otpCode: otpCode,
@@ -44,32 +50,37 @@ const OTPInput = () => {
 
   return (
     <>
-     <SettingsHeader title={'Enter OTP'}/>
-    <View style={styles.container}>
-      <Text style={styles.title}>Enter the OTP received in your mobile number</Text>
-     
-      <View style={styles.otpContainer}>
-        {otp.map((_, index) => (
-          <TextInput
-            key={index}
-            ref={el => (refs.current[index] = el)}
-            style={styles.input}
-            value={otp[index]}
-            onChangeText={value => handleInputChange(value, index)}
-            onKeyPress={e => handleKeyPress(e, index)}
-            keyboardType="numeric"
-            maxLength={1}
-          />
-        ))}
+      <SettingsHeader title={'Enter OTP'} />
+      <View style={styles.container}>
+        <Text style={styles.title}>
+          Enter the OTP received on your mobile number
+        </Text>
+
+        <View style={styles.otpContainer}>
+          {otp.map((_, index) => (
+            <TextInput
+              key={index}
+              ref={el => (refs.current[index] = el)}
+              style={styles.input}
+              value={otp[index]}
+              onChangeText={value => handleInputChange(value, index)}
+              onKeyPress={e => handleKeyPress(e, index)}
+              keyboardType="numeric"
+              maxLength={1}
+            />
+          ))}
+        </View>
+
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
+        <CustomButton
+          title="Submit"
+          onPress={handleSubmit}
+          bgColor={COLORS.DarkBlue}
+          textColor="white"
+          borderColor={COLORS.DarkBlue}
+        />
       </View>
-      <CustomButton
-        title="Submit"
-        onPress={handleSubmit}
-        bgColor={COLORS.DarkBlue}
-        textColor="white"
-        borderColor={COLORS.DarkBlue}
-      />
-    </View>
     </>
   );
 };
@@ -83,15 +94,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    // color: '#1679AB',
-    color:'black',
+    color: 'black',
     fontWeight: 'bold',
     marginBottom: 40,
   },
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 40,
+    marginBottom: 10,
   },
   input: {
     width: 50,
@@ -103,6 +113,11 @@ const styles = StyleSheet.create({
     color: 'black',
     borderRadius: 10,
     marginHorizontal: 5,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 10,
   },
 });
 

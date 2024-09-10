@@ -338,9 +338,10 @@ const Payment = () => {
 
   const handleNav = () => {
     setModalOpen(false);
-    navigation.navigate(ROUTES.TrackListScreen, {
+    navigation.navigate(ROUTES.OrderTrackingTab, {
       email: order.userEmail,
       orderId: order.orderId,
+      order:order,
       token,
     });
   };

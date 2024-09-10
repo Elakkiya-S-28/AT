@@ -25,6 +25,17 @@ const CustomTextInput = ({
   borderColor = '#ccc',
   onSubmit, // New prop for submit action
 }) => {
+  
+  // Function to handle email input with first letter in lowercase
+  const handleTextChange = (text) => {
+    if (keyboardType === 'email-address') {
+      const updatedText = text.charAt(0).toLowerCase() + text.slice(1);
+      onChangeText(updatedText);
+    } else {
+      onChangeText(text);
+    }
+  };
+
   return (
     <View style={styles.inputContainer}>
       {label && <Text style={styles.label}>{label}</Text>}
@@ -36,9 +47,10 @@ const CustomTextInput = ({
           placeholderTextColor={'gray'}
           secureTextEntry={secureTextEntry && !showPassword}
           value={value}
-          onChangeText={onChangeText}
+          onChangeText={handleTextChange} // Use handleTextChange instead of onChangeText
           onSubmitEditing={onSubmit} // Trigger the function on submit
           returnKeyType="done" // Show 'done' button on the keyboard
+          autoCapitalize={keyboardType === 'email-address' ? 'none' : 'sentences'} // Disable auto capitalization for email
         />
         {isPasswordField && (
           <TouchableOpacity

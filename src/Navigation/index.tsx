@@ -21,6 +21,10 @@ import {ForgotEmail} from '../Container/ForgotEmail';
 import TrackingScreen from '../Container/TrackingScreen';
 import TrackListScreen from '../Container/TrackList';
 import Settings from '../Container/Setting';
+import OrderApproved from '../Container/OrderTrackingTab/OrderApproved';
+import OrderQueued from '../Container/OrderTrackingTab/OrderQueued';
+import { OrderTrackingTab } from '../Container/OrderTrackingTab';
+import PaymentTracking from '../Container/PaymentTracking';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +32,26 @@ function Navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={ROUTES.OnBoard}>
+      <Stack.Screen
+          name={ROUTES.PaymentTracking}
+          component={PaymentTracking}
+          options={{headerShown: false}}
+        />
+      <Stack.Screen
+          name={ROUTES.OrderTrackingTab}
+          component={OrderTrackingTab}
+          options={{headerShown: false}}
+        />
+      <Stack.Screen
+          name={ROUTES.OrderApproved}
+          component={OrderApproved}
+          options={{headerShown: false}}
+        />
+      <Stack.Screen
+          name={ROUTES.OrderQueued}
+          component={OrderQueued}
+          options={{headerShown: false}}
+        />
       <Stack.Screen
           name={ROUTES.TrackListScreen}
           component={TrackListScreen}

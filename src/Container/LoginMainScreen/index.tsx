@@ -6,12 +6,12 @@ import {
   StyleSheet,
   Image,
   ImageBackground,
-  Alert,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import CustomTextInput from '../../Component/CustomTextInput';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation, useFocusEffect } from '@react-navigation/core';
 import { ROUTES } from '../../Routes';
 import ICONS from '../../Images/Icon';
 import axios from 'axios';
@@ -29,6 +29,7 @@ const LoginMainScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Validate email
   const validateEmail = email => {
@@ -36,20 +37,15 @@ const LoginMainScreen = () => {
     return emailRegex.test(email);
   };
 
-  // Store email in AsyncStorage
-  // useEffect(() => {
-  //   const storeEmail = async () => {
-  //     try {
-  //       if (email) {
-  //         await AsyncStorage.setItem('email', email);
-  //         console.log('Email stored in AsyncStorage:', email);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error storing email:', error);
-  //     }
-  //   };
-  //   storeEmail();
-  // }, [email]);
+  // Reset email and password when the screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      setEmail('');
+      setPassword('');
+      setEmailError('');
+      setPasswordError('');
+    }, [])
+  );
 
   // Handle login
   const handleLogin = async () => {
@@ -79,6 +75,7 @@ const LoginMainScreen = () => {
       return;
     }
 
+    setLoading(true); // Start loading
     try {
       const response = await axios.post(`${API_URL}/user/login`, {
         email,
@@ -86,15 +83,14 @@ const LoginMainScreen = () => {
         role: 'BUYER',
       });
       console.log('Login response:', response.data);
-      //  await AsyncStorage.setItem('token',response.data.token)
       if (response.data.message === 'User logged in successfully') {
-        // await AsyncStorage.setItem('token',response.data.token),
-        // await AsyncStorage.setItem('email',email)
+        await AsyncStorage.setItem('token', response.data.token);
+        await AsyncStorage.setItem('email', email);
         navigation.navigate(ROUTES.MainTab, {
           screen: ROUTES.MainScreen,
           params: {
             token: response.data.token,
-            email,
+            email: email,
           },
         });
       } else {
@@ -105,6 +101,8 @@ const LoginMainScreen = () => {
       console.error('Login error:', error.response);
       setAlertMessage('Please log in later');
       setAlertVisible(true);
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -179,6 +177,12 @@ const LoginMainScreen = () => {
         </View>
       </View>
 
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={COLORS.DarkBlue} />
+        </View>
+      )}
+
       <Modal
         transparent={true}
         visible={alertVisible}
@@ -243,6 +247,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 15,
   },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -271,7 +281,8 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
 });

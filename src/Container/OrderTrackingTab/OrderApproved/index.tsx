@@ -1,26 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Modal } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { ROUTES } from '../../Routes';
-import SettingsHeader from '../../Component/Header';
-import { API_URL } from '../../config/API';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Modal } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLORS } from '../../config/COLORS';
+import { API_URL } from '../../../config/API';
+import { ROUTES } from '../../../Routes';
+import { COLORS } from '../../../config/COLORS';
 
-const TrackListScreen = () => {
+const OrderApproved = () => {
   const [orders, setOrders] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
   const navigation = useNavigation();
-  const route = useRoute();
-  const { token, email } = route.params;
+  const [token, setToken] = useState(null);
+  const [email, setEmail] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const retrievedToken = await AsyncStorage.getItem('token');
+        const retrievedEmail = await AsyncStorage.getItem('email');
+        setToken(retrievedToken);
+        setEmail(retrievedEmail);
+        console.log('TOKEN ORDER APPROVED', retrievedToken);
+      } catch (error) {
+        console.error('Error retrieving data from AsyncStorage:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (token && email) {
+      fetchOrderDetails();
+    }
+  }, [token, email]);
 
   const fetchOrderDetails = async () => {
     try {
       setLoading(true);
-      const payload = { status: 'QUEUED', email: email };
+      const payload = { status: 'VERIFIED', email: email };
       const response = await axios.post(
         `${API_URL}/user/getOrderDetails`,
         payload,
@@ -29,9 +49,8 @@ const TrackListScreen = () => {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-        },
+        }
       );
-
       setOrders(response.data.message);
     } catch (error) {
       console.error('Error fetching order details:', error.response?.data || error.message);
@@ -43,17 +62,8 @@ const TrackListScreen = () => {
     }
   };
 
-  useEffect(() => {
-    fetchOrderDetails();
-  }, []);
-
   const handleTrackPress = async (order) => {
     setCurrentOrder(order);
-    if (order.status === 'QUEUED') {
-      setModalOpen(true);
-      return;
-    }
-    
     try {
       const response = await axios.get(`${API_URL}/order/getTracking?id=${order.orderId}`, {
         headers: {
@@ -81,9 +91,8 @@ const TrackListScreen = () => {
 
   return (
     <View style={styles.container}>
-      <SettingsHeader title={'Your Orders'} />
       {loading ? (
-        <View style={{ alignSelf: 'center', justifyContent: 'center', flex: 1 }}>
+        <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color={COLORS.DarkBlue} />
         </View>
       ) : (
@@ -104,15 +113,15 @@ const TrackListScreen = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {currentOrder?.status === 'QUEUED' ? (
+            {currentOrder?.status === 'VERIFIED' ? (
               <>
                 <Text style={styles.modalText}>Please wait till the approval.</Text>
-                <Text style={{ color: 'black', marginTop: 2, marginBottom: 10 }}>Your order is currently queued.</Text>
+                <Text style={styles.modalSubText}>Your order is currently VERIFIED.</Text>
               </>
             ) : (
               <>
                 <Text style={styles.modalText}>You are not Authorized.</Text>
-                <Text style={{ color: 'black', marginTop: 2, marginBottom: 10 }}>Please Contact: 9751111444</Text>
+                <Text style={styles.modalSubText}>Please Contact: 9751111444</Text>
               </>
             )}
             <TouchableOpacity style={styles.modalButton} onPress={() => setModalOpen(false)}>
@@ -127,6 +136,11 @@ const TrackListScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  loaderContainer: {
+    alignSelf: 'center',
+    justifyContent: 'center',
     flex: 1,
   },
   trackItem: {
@@ -195,6 +209,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: 'black',
   },
+  modalSubText: {
+    color: 'black',
+    marginTop: 2,
+    marginBottom: 10,
+  },
   modalButton: {
     backgroundColor: COLORS.DarkBlue,
     padding: 10,
@@ -207,4 +226,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TrackListScreen;
+export default OrderApproved;

@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Modal,
+  Alert,
 } from 'react-native';
 import IMAGES from '../../Images/Image';
 import ICONS from '../../Images/Icon';
@@ -91,7 +92,10 @@ const Fabric = () => {
         'Error adding to cart:',
         error.response?.data || error.message,
       );
-      setOpenCheckoutModal(true);
+      if(error.response.data.message === 'Your account is temporarily blocked. Please contact admin: +91 97551 11444.'){
+        Alert.alert('Your account is temporarily blocked', 'Please contact admin: +91 97551 11444.')
+       }
+      //  setOpenCheckoutModal(true);
     }
   };
 

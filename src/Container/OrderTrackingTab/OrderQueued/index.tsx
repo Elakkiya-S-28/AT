@@ -1,21 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Modal } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { ROUTES } from '../../Routes';
-import SettingsHeader from '../../Component/Header';
-import { API_URL } from '../../config/API';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Modal } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLORS } from '../../config/COLORS';
+import { API_URL } from '../../../config/API';
+import { ROUTES } from '../../../Routes';
+import { COLORS } from '../../../config/COLORS';
 
-const TrackListScreen = () => {
+const OrderQueued = () => {
   const [orders, setOrders] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
+  const [token, setToken] = useState(null);
+  const [email, setEmail] = useState(null);
   const navigation = useNavigation();
-  const route = useRoute();
-  const { token, email } = route.params;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const retrievedToken = await AsyncStorage.getItem('token');
+        const retrievedEmail = await AsyncStorage.getItem('email');
+        setToken(retrievedToken);
+        setEmail(retrievedEmail);
+        console.log('TOKEN ORDERQUEUED', retrievedToken);
+      } catch (error) {
+        console.error('Error retrieving data from AsyncStorage:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (token && email) {
+      fetchOrderDetails();
+    }
+  }, [token, email]);
 
   const fetchOrderDetails = async () => {
     try {
@@ -29,9 +49,8 @@ const TrackListScreen = () => {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-        },
+        }
       );
-
       setOrders(response.data.message);
     } catch (error) {
       console.error('Error fetching order details:', error.response?.data || error.message);
@@ -42,10 +61,6 @@ const TrackListScreen = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchOrderDetails();
-  }, []);
 
   const handleTrackPress = async (order) => {
     setCurrentOrder(order);
@@ -81,7 +96,6 @@ const TrackListScreen = () => {
 
   return (
     <View style={styles.container}>
-      <SettingsHeader title={'Your Orders'} />
       {loading ? (
         <View style={{ alignSelf: 'center', justifyContent: 'center', flex: 1 }}>
           <ActivityIndicator size="large" color={COLORS.DarkBlue} />
@@ -90,7 +104,7 @@ const TrackListScreen = () => {
         <FlatList
           data={orders}
           renderItem={renderTrackItem}
-          keyExtractor={(item) => item.orderId}
+          keyExtractor={(item) => item.orderId.toString()} // Ensure `orderId` is a string
           ListEmptyComponent={<Text style={styles.emptyMessage}>No orders available</Text>}
           contentContainerStyle={orders.length === 0 ? styles.emptyListContainer : null}
           showsVerticalScrollIndicator={false}
@@ -207,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TrackListScreen;
+export default OrderQueued;

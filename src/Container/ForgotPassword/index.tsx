@@ -20,13 +20,28 @@ const ForgotPassword = () => {
   const [password, setPassword] = useState('');
   const [confirmPwd, setConfirmPwd] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showconfirmpwd, setShowconfirmPwd] = useState(false);
+  const [showConfirmPwd, setShowConfirmPwd] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); // State for error message
+
   const navigation = useNavigation();
   const route = useRoute();
   const {otpCode, email} = route.params;
+
   console.log(otpCode, 'OTP', email, 'EMAIL', password);
   console.log(typeof otpCode, 'TYPE', typeof email, 'EMAIL', typeof password);
+
+  // Function to handle validation and navigation
   const handleNav = async () => {
+    if (!password || !confirmPwd) {
+      setErrorMessage('Please fill out both fields.');
+      return;
+    }
+
+    if (password !== confirmPwd) {
+      setErrorMessage('Please check Passwords.');
+      return;
+    }
+
     try {
       const response = await axios.post(API_URL + '/user/verifyOtp', {
         email: email,
@@ -62,10 +77,12 @@ const ForgotPassword = () => {
       );
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row'}}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        {/* <TouchableOpacity onPress={() => navigation.goBack()}> */}
+        <TouchableOpacity onPress={() => navigation.navigate(ROUTES.ForgotEmail)}>
           <Image source={ICONS.left} style={{height: 24, width: 24}} />
         </TouchableOpacity>
         <Text style={styles.backText}>Back</Text>
@@ -74,11 +91,15 @@ const ForgotPassword = () => {
       <View style={{marginTop: 120}}>
         <Text style={styles.title}>Forgot Password</Text>
         <Text style={{color: 'black', fontSize: 18, fontWeight: '600'}}>
-          Enter the Email Address which you have registered
+          Enter the new password
         </Text>
+
         <CustomTextInput
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            setPassword(text);
+            setErrorMessage(''); // Clear error message on input change
+          }}
           placeholder="New Password"
           keyboardType="default"
           isPasswordField={true}
@@ -86,21 +107,26 @@ const ForgotPassword = () => {
           toggleSecureEntry={() => setShowPassword(!showPassword)}
           showPassword={showPassword}
         />
+
         <CustomTextInput
           value={confirmPwd}
           isPasswordField={true}
-          onChangeText={setConfirmPwd}
+          onChangeText={(text) => {
+            setConfirmPwd(text);
+            setErrorMessage(''); // Clear error message on input change
+          }}
           placeholder="Confirm Password"
           keyboardType="default"
-          secureTextEntry={true}
-          text="Confirm Password"
-          secureTextEntry={!showconfirmpwd}
-          toggleSecureEntry={() => setShowconfirmPwd(!showconfirmpwd)}
-          showPassword={showconfirmpwd}
+          secureTextEntry={!showConfirmPwd}
+          toggleSecureEntry={() => setShowConfirmPwd(!showConfirmPwd)}
+          showPassword={showConfirmPwd}
         />
 
+        {/* Display error message if exists */}
+        {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+
         <CustomButton
-          title="Forgot Password"
+          title="Reset Password"
           onPress={handleNav}
           bgColor={COLORS.DarkBlue}
           textColor="white"
@@ -116,7 +142,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     padding: 20,
-    // justifyContent: 'center',
   },
   backText: {
     fontSize: 16,
@@ -132,26 +157,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  titleAshok: {
-    color: '#ef6c00', // Orange color for "Ashok"
-  },
-  forgotPasswordText: {
-    color: '#333',
+  errorMessage: {
+    color: 'red',
     fontSize: 14,
-    textAlign: 'right',
-    marginTop: 20,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 50,
-  },
-  footerText: {
-    color: '#333',
-  },
-  registerText: {
-    color: '#ef6c00',
-    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

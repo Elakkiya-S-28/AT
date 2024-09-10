@@ -1,3 +1,5 @@
+
+
 export const ROUTES = {
   FirstScreen: 'FirstScreen',
   Login: 'Login',
@@ -17,5 +19,9 @@ export const ROUTES = {
   OTPInput: 'OTPInput',
   ForgotEmail: 'ForgotEmail',
   TrackingScreen:'TrackingScreen',
-  TrackListScreen:'TrackListScreen'
+  TrackListScreen:'TrackListScreen',
+  OrderQueued:'OrderQueued',
+  OrderApproved:'OrderApproved',
+  OrderTrackingTab:'OrderTrackingTab',
+  PaymentTracking:'PaymentTracking'
 };

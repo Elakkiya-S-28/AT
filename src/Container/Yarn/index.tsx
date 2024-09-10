@@ -241,6 +241,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  Modal,
 } from 'react-native';
 import IMAGES from '../../Images/Image';
 import ICONS from '../../Images/Icon';
@@ -256,7 +258,7 @@ const Yarn = () => {
   const {token, email, product} = route.params;
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState({});
-
+  const [openCheckoutModal, setOpenCheckoutModal] = useState(false);
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       setQuantities({});
@@ -270,6 +272,7 @@ const Yarn = () => {
     const quantity = quantities[productId];
     if (!quantity) {
       console.error('Quantity is required');
+      Alert.alert('Quantity is required')
       return;
     }
 
@@ -306,6 +309,12 @@ const Yarn = () => {
       ]);
     } catch (error) {
       console.error('Error adding to cart:', error.response.data);
+     if(error.response.data.message === 'Your account is temporarily blocked. Please contact admin: +91 97551 11444.'){
+      Alert.alert('Your account is temporarily blocked', 'Please contact admin: +91 97551 11444.')
+     }
+     else(
+      Alert.alert(error.response.data.message)
+     )
     }
   };
 
@@ -407,6 +416,28 @@ const Yarn = () => {
           />
         </View>
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openCheckoutModal}
+        onRequestClose={() => {
+          setOpenCheckoutModal(!openCheckoutModal);
+        }}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalMessage}>
+              Please Add the Product
+            </Text>
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setOpenCheckoutModal(false)}>
+                <Text style={styles.modalButtonText}>Ok</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -521,6 +552,40 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalMessage: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+    color:'black',
+    fontWeight:'bold'
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    backgroundColor: COLORS.DarkBlue,
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   notification: {
     position: 'absolute',

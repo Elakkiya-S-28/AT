@@ -1,27 +1,28 @@
 import * as React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Image, Text} from 'react-native';
-import {ROUTES} from '../../Routes';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Image, Text } from 'react-native';
+import { ROUTES } from '../../Routes';
 import MainScreen from '../../Container/MainScreen';
 import Settings from '../../Container/Setting';
 import ICONS from '../../Images/Icon'; // Import the icons
 import TrackListScreen from '../../Container/TrackList';
-import { useRoute } from '@react-navigation/core';
+import { OrderTrackingTab } from '../../Container/OrderTrackingTab'; // Correct import
 
 const Tab = createBottomTabNavigator();
 
-const MainTab = () => {
-  const route = useRoute(); 
+const MainTab = ({ route }) => {
   const { token, email } = route.params || {}; 
+  console.log('TOKENEMAIL MAINTAB', token, email);
+
   return (
     <Tab.Navigator
       initialRouteName={ROUTES.MainScreen}
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused}) => {
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused }) => {
           let iconName;
           if (route.name === ROUTES.MainScreen) {
             iconName = ICONS.home;
-          } else if (route.name === ROUTES.TrackListScreen) {
+          } else if (route.name === ROUTES.OrderTrackingTab) {
             iconName = ICONS.carttab;
           }
           return (
@@ -35,31 +36,30 @@ const MainTab = () => {
             />
           );
         },
-        tabBarLabel: ({focused}) => {
+        tabBarLabel: ({ focused }) => {
           let label;
           if (route.name === ROUTES.MainScreen) {
             label = 'Home';
-          } else if (route.name === ROUTES.TrackListScreen) {
-            label = 'Cart';
+          } else if (route.name === ROUTES.OrderTrackingTab) {
+            label = 'Order';
           }
           return (
-            <Text style={{color: focused ? '#1679AB' : '#222'}}>{label}</Text>
+            <Text style={{ color: focused ? '#1679AB' : '#222' }}>{label}</Text>
           );
         },
         headerShown: false,
-      })}>
+      })}
+    >
       <Tab.Screen
         name={ROUTES.MainScreen}
         component={MainScreen}
-        initialParams={{ token, email }} // Pass token and email here
+        initialParams={{ token, email }}
       />
       <Tab.Screen
-        name={ROUTES.TrackListScreen}
-        component={TrackListScreen}
-        initialParams={{ token, email }} // Pass token and email here as well
+        name={ROUTES.OrderTrackingTab}
+        component={OrderTrackingTab}
+        initialParams={{ token, email }}
       />
-      {/* <Tab.Screen name={ROUTES.Settings} component={Settings} /> */}
-  
     </Tab.Navigator>
   );
 };
