@@ -270,6 +270,7 @@ console.log(order,"TRACKING")
         details.push([]);
         position = 0;
       }
+     
       if (order.message.inTransit) {
         stepLabels.push('In Transit');
         details.push(

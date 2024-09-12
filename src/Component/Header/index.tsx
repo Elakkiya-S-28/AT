@@ -4,12 +4,12 @@ import { COLORS } from '../../config/COLORS';  // Assuming COLORS is correctly i
 import ICONS from '../../Images/Icon';  // Assuming ICONS is correctly imported from your project
 import { useNavigation } from '@react-navigation/core';
 
-const SettingsHeader = ({ title }) => {
+const SettingsHeader = ({ title, onPress }) => {
   const navigation = useNavigation();
   
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      <TouchableOpacity onPress={onPress} style={styles.backButton}>
         <Image source={ICONS.left} style={styles.backIcon} />
       </TouchableOpacity>
       <Text style={styles.headerText}>{title}</Text>
