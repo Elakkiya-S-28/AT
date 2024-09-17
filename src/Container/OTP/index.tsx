@@ -53,7 +53,7 @@ const OTPInput = () => {
       <SettingsHeader title={'Enter OTP'} />
       <View style={styles.container}>
         <Text style={styles.title}>
-          Enter the OTP received on your mobile number
+          Enter the OTP received on your Email
         </Text>
 
         <View style={styles.otpContainer}>

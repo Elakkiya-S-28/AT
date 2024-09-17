@@ -243,9 +243,79 @@
 
 // export default TrackingScreen;
 
+// import React, { useState, useEffect } from 'react';
+// import { View } from 'react-native';
+// import { useRoute } from '@react-navigation/core';
+// import CustomStepIndicator from '../../Component/stepIndicator';
+// import SettingsHeader from '../../Component/Header';
+// import CustomButton from '../../Component/CustomButton';
+// import { COLORS } from '../../config/COLORS';
+
+// const TrackingScreen = () => {
+//   const route = useRoute();
+//   const { order } = route.params;
+//   const [currentPosition, setCurrentPosition] = useState(0);
+//   const [stepDetails, setStepDetails] = useState([]);
+//   const [steps, setSteps] = useState([]);
+// console.log(order,"TRACKING")
+//   useEffect(() => {
+  
+//     if (order && order.message) {
+//       const stepLabels = [];
+//       const details = [];
+//       let position = 0;
+
+//       if (order.message.orderConfirmed) {
+//         stepLabels.push('Order Confirmed');
+//         details.push([]);
+//         position = 0;
+//       }
+     
+//       if (order.message.inTransit) {
+//         stepLabels.push('In Transit');
+//         details.push(
+//           order.message.location.map(
+//             loc => `Location: ${loc.location}, Time: ${new Date(loc.datetime).toLocaleString()}`
+//           )
+//         );
+//         position = 1;
+//       }
+
+//       if (order.message.shipped) {
+//         stepLabels.push('Shipped');
+//         details.push([]);
+//         position = 2;
+//       }
+
+     
+
+//       if (order.message.delivered) {
+//         stepLabels.push('Delivered');
+//         details.push([]);
+//         position = 3;
+//       }
+
+//       setSteps(stepLabels);
+//       setStepDetails(details);
+//       setCurrentPosition(position);
+//     }
+//   }, [order]);
+
+//   return (
+//     <View style={{ flex: 1 }}>
+//       <SettingsHeader title={'Tracking'}/>
+//       <CustomButton title={'Invoice'} onPress={() => console.log('Pressed')} bgColor={COLORS.DarkBlue} textColor={'white'} borderColor={COLORS.DarkBlue}/>
+//       <CustomStepIndicator steps={steps} currentPosition={currentPosition} stepDetails={stepDetails} />
+//     </View>
+//   );
+// };
+
+// export default TrackingScreen;
+
 import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, Alert, Platform, PermissionsAndroid } from 'react-native';
 import { useRoute } from '@react-navigation/core';
+import RNFetchBlob from 'rn-fetch-blob';
 import CustomStepIndicator from '../../Component/stepIndicator';
 import SettingsHeader from '../../Component/Header';
 import CustomButton from '../../Component/CustomButton';
@@ -257,9 +327,9 @@ const TrackingScreen = () => {
   const [currentPosition, setCurrentPosition] = useState(0);
   const [stepDetails, setStepDetails] = useState([]);
   const [steps, setSteps] = useState([]);
-console.log(order,"TRACKING")
+  console.log(order, 'TRACKING');
+
   useEffect(() => {
-  
     if (order && order.message) {
       const stepLabels = [];
       const details = [];
@@ -270,7 +340,7 @@ console.log(order,"TRACKING")
         details.push([]);
         position = 0;
       }
-     
+
       if (order.message.inTransit) {
         stepLabels.push('In Transit');
         details.push(
@@ -287,8 +357,6 @@ console.log(order,"TRACKING")
         position = 2;
       }
 
-     
-
       if (order.message.delivered) {
         stepLabels.push('Delivered');
         details.push([]);
@@ -301,10 +369,79 @@ console.log(order,"TRACKING")
     }
   }, [order]);
 
+  const requestAndroidPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission',
+          message: 'App needs access to your storage to download the invoice.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+  const handleDownloadInvoice = async () => {
+    const invoiceUrl = order?.message?.invoiceUrl;
+
+    if (!invoiceUrl) {
+      Alert.alert('Error', 'No invoice URL found.');
+      return;
+    }
+
+    if (Platform.OS === 'android') {
+      const permissionGranted = await requestAndroidPermission();
+      if (!permissionGranted) {
+        Alert.alert('Permission Denied', 'Storage permission is required to download the invoice.');
+        return;
+      }
+    }
+
+    const { config, fs } = RNFetchBlob;
+    const downloadDir = fs.dirs.DownloadDir; // Download directory path
+    const fileName = `invoice-${order?.message?.orderId}.pdf`;
+    const filePath = `${downloadDir}/${fileName}`;
+
+    config({
+      fileCache: true,
+      appendExt: 'pdf',
+      path: filePath,
+      notification: true, // Show notification after download completes
+      addAndroidDownloads: {
+        useDownloadManager: true, // Use Android's native download manager
+        notification: true,
+        path: filePath,
+        description: 'Downloading invoice',
+      },
+    })
+      .fetch('GET', invoiceUrl)
+      .then(res => {
+        Alert.alert('Success', 'Invoice downloaded successfully!');
+        console.log('File downloaded to: ', res.path());
+      })
+      .catch(error => {
+        Alert.alert('Error', 'Failed to download invoice.');
+        console.error('Download error:', error);
+      });
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <SettingsHeader title={'Tracking'}/>
-      <CustomButton title={'Invoice'} onPress={() => console.log('Pressed')} bgColor={COLORS.DarkBlue} textColor={'white'} borderColor={COLORS.DarkBlue}/>
+      <SettingsHeader title={'Tracking'} />
+      <CustomButton
+        title={'Invoice'}
+        onPress={handleDownloadInvoice}
+        bgColor={COLORS.DarkBlue}
+        textColor={'white'}
+        borderColor={COLORS.DarkBlue}
+      />
       <CustomStepIndicator steps={steps} currentPosition={currentPosition} stepDetails={stepDetails} />
     </View>
   );

@@ -272,7 +272,8 @@ const Yarn = () => {
     const quantity = quantities[productId];
     if (!quantity) {
       console.error('Quantity is required');
-      Alert.alert('Quantity is required')
+      // Alert.alert('Quantity is required')
+      setOpenCheckoutModal(true)
       return;
     }
 
@@ -332,15 +333,20 @@ const Yarn = () => {
         </TouchableOpacity>
         <Text style={styles.header}>Yarn</Text>
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate(ROUTES.ReviewScreen, {
-              cartItems,
-              token,
-              email,
-              category,
-              cat:'yarn'
-            })
-          }>
+  onPress={() => {
+    if (cartItems.length === 0) {
+      setOpenCheckoutModal(true);
+      return;
+    }
+    navigation.navigate(ROUTES.ReviewScreen, {
+      cartItems,
+      token,
+      email,
+      category,
+      cat: 'yarn'
+    });
+  }}
+>
           <Image
             source={ICONS.cart}
             style={{tintColor: 'white', height: 24, width: 24}}
@@ -368,6 +374,7 @@ const Yarn = () => {
                     }}>
                     {item.productId}
                   </Text> */}
+                   <Text style={{ color: 'black', textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>Qty: {item.quantity}</Text>
                   <Image source={{uri:item.imageUrl}} style={styles.productImage} />
                   {/* <View style={styles.discountBox}>
                     <Text style={styles.discount}>30% OFF</Text>
@@ -377,7 +384,7 @@ const Yarn = () => {
                   <Text style={styles.productName}>{item.productName}</Text>
                   <View style={styles.inputContainer}>
                     <TextInput
-                      placeholder="kg"
+                      placeholder="m"
                       placeholderTextColor={'gray'}
                       style={styles.input}
                       keyboardType="numeric"
@@ -394,7 +401,7 @@ const Yarn = () => {
                       alignItems: 'center',
                     }}>
                     <Text style={styles.price}>
-                      Rs. {item.gstPriceForBuyer}/kg
+                      Rs. {item.gstPriceForBuyer}/m
                     </Text>
                  
                   </View>
@@ -488,9 +495,9 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   productImage: {
-    width: 100,
-    height: 100,
-    // borderRadius: 10,
+    width: 90,
+    height: 90,
+    borderRadius: 8,
     marginRight: 16,
   },
   discountBox: {
