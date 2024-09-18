@@ -32,7 +32,7 @@ const SignUp = () => {
   const [errors, setErrors] = useState({});
   const [buttonClicked, setButtonClicked] = useState(false); // New state for button click
   const [visible, setVisible] = useState(false);
-
+  const [product,setProduct]= useState('')
   const validate = () => {
     const newErrors = {};
     if (!name.trim()) {
@@ -83,6 +83,7 @@ const SignUp = () => {
       address: address.trim(),
       panNo: pan.trim(),
       gstNo: gst.trim(),
+      userPreference:product,
     };
     console.log(signUpData, 'SIGNUPDATA');
     try {
@@ -228,6 +229,24 @@ const SignUp = () => {
             />
           </View>
           {errors.role && <Text style={styles.errorText}>{errors.role}</Text>}
+         
+         
+          <Text style={{color: 'black'}}>Preference</Text>
+          <View style={styles.checkboxRow}>
+            <Checkbox
+              label="Fabric"
+              checked={product === 'fabric'}
+              onChange={() => setProduct('fabric')}
+            />
+            <Checkbox
+              label="Yarn"
+              checked={product === 'yarn'}
+              onChange={() => setProduct('yarn')}
+            />
+          </View>
+          {errors.product && <Text style={styles.errorText}>{errors.product}</Text>}
+
+
 
           <CustomButton
             title="Register"

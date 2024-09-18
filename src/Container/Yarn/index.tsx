@@ -282,12 +282,16 @@ const Yarn = () => {
         email: email,
         role: 'BUYER',
       },
-      products: [
-        {
-          productId,
-          quantity: parseInt(quantity, 10),
-        },
-      ],
+      // products: [
+      //   {
+      //     productId,
+      //     quantity: parseInt(quantity, 10),
+      //   },
+      // ],
+      products: cartItems.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      })),
       status: 'IN-CART',
       orderId: 37,
     };
@@ -304,10 +308,11 @@ const Yarn = () => {
         },
       );
       console.log('Order Response:', response.data);
-      setCartItems([
-        ...cartItems,
-        {productId, quantity: parseInt(quantity, 10)},
-      ]);
+      // setCartItems([
+      //   ...cartItems,
+      //   {productId, quantity: parseInt(quantity, 10)},
+      // ]);
+      setCartItems(prevItems => [...prevItems, newProduct]);
     } catch (error) {
       console.error('Error adding to cart:', error.response.data);
      if(error.response.data.message === 'Your account is temporarily blocked. Please contact admin: +91 97551 11444.'){
