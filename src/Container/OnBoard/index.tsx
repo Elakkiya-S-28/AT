@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { ROUTES } from '../../Routes';
 import IMAGES from '../../Images/Image';
 import { COLORS } from '../../config/COLORS';
@@ -33,6 +33,7 @@ const OnBoard = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
       <Image source={slides[currentSlide].image} style={styles.image} />
       <Text style={styles.content}>{slides[currentSlide].content}</Text>
 
@@ -57,6 +58,7 @@ const OnBoard = ({ navigation }) => {
       </TouchableOpacity>
 
       <Text style={styles.skip} onPress={() => navigation.navigate(ROUTES.FirstScreen)}>Skip</Text>
+      </ScrollView>
     </View>
   );
 };

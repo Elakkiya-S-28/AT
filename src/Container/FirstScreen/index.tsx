@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, ScrollView} from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import {useNavigation} from '@react-navigation/core';
 import {ROUTES} from '../../Routes';
@@ -10,6 +10,7 @@ const FirstScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.topSection}>
         <Image source={IMAGES.mainimg} style={styles.topImage} />
       </View>
@@ -30,6 +31,7 @@ const FirstScreen = () => {
           borderColor={COLORS.DarkBlue}
         />
       </View>
+      </ScrollView>
     </View>
   );
 };
