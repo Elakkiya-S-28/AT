@@ -3075,6 +3075,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
+    width:'85%'
   },
   quantity: {
     fontSize: 14,

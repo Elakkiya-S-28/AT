@@ -722,12 +722,13 @@ import { COLORS } from '../../config/COLORS';
 const Fabric = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { token, email, product } = route.params;
+  const { token, email , user} = route.params;
+  const [product, setProduct] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // State for refreshing
-
+  console.log(product,"PRODUCT......", user)
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       setQuantities({});
@@ -737,6 +738,31 @@ const Fabric = () => {
     return unsubscribe;
   }, [navigation]);
 
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await axios.post(
+          API_URL + '/user/getCategory',
+          { category:user }, // Make sure 'category' is defined in the outer scope
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        console.log(response.data.message, 'Response from mainscreen');
+        setProduct(response.data.message);
+      } catch (error) {
+        console.log(error, "ERROR IN FETCH CAT", error.response?.data);
+      }
+    };
+  
+    if (token ) { 
+      fetchCategory();
+    }
+  }, [token]); 
+  
   const refreshData = async () => {
     setRefreshing(true);  // Start refreshing
 

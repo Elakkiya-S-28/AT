@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SettingsHeader from '../../Component/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../Routes';
 
 type State = { index: number; routes: Route[] };
 
@@ -54,9 +55,17 @@ export const OrderTrackingTab = () => {
 
   // Handle back button press
   useEffect(() => {
-    const backAction = () => {
-      navigation.navigate('MainTab'); // Replace 'MainTab' with the name of your tab or screen
-      return true; // Prevent default back action
+    const backAction = async () => {
+      const user = await AsyncStorage.getItem('cat');
+      if(user === 'fabric'){
+        navigation.navigate(ROUTES.Fabric); // Replace 'MainTab' with the name of your tab or screen
+        return true; // Prevent default back action
+      }
+      else{
+        navigation.navigate(ROUTES.Yarn)
+        return true;
+      }
+     
     };
 
     const backHandler = BackHandler.addEventListener(

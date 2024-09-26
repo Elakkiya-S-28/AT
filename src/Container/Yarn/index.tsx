@@ -255,10 +255,14 @@ import {COLORS} from '../../config/COLORS';
 const Yarn = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const {token, email, product} = route.params;
+  const {token, email, user} = route.params;
+
+  const [product, setProduct] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [openCheckoutModal, setOpenCheckoutModal] = useState(false);
+
+  // Clear cart and quantities when the component is blurred
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       setQuantities({});
@@ -268,12 +272,65 @@ const Yarn = () => {
     return unsubscribe;
   }, [navigation]);
 
-  const handleAddToCart = async productId => {
+  // Fetch product categories
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await axios.post(
+          API_URL + '/user/getCategory',
+          { category: user },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        setProduct(response.data.message);
+      } catch (error) {
+        console.log('Error fetching category:', error.response?.data);
+      }
+    };
+
+    if (token) {
+      fetchCategory();
+    }
+  }, [token]);
+
+  // Handle adding product to cart
+  const handleAddToCart = productId => {
     const quantity = quantities[productId];
-    if (!quantity) {
-      console.error('Quantity is required');
-      // Alert.alert('Quantity is required')
-      setOpenCheckoutModal(true)
+    
+    if (!quantity || quantity <= 0) {
+      Alert.alert('Invalid Quantity', 'Please enter a valid quantity.');
+      return;
+    }
+
+    const existingProduct = cartItems.find(item => item.productId === productId);
+    
+    // Update quantity if product is already in the cart
+    if (existingProduct) {
+      setCartItems(prevItems =>
+        prevItems.map(item =>
+          item.productId === productId ? { ...item, quantity: parseInt(quantity) } : item
+        )
+      );
+    } else {
+      // Add new product to the cart
+      const newProduct = {
+        productId,
+        quantity: parseInt(quantity),
+      };
+      setCartItems(prevItems => [...prevItems, newProduct]);
+    }
+
+    // Clear the quantity input for the added product
+    setQuantities(prevQuantities => ({ ...prevQuantities, [productId]: '' }));
+  };
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) {
+      setOpenCheckoutModal(true);
       return;
     }
 
@@ -282,18 +339,11 @@ const Yarn = () => {
         email: email,
         role: 'BUYER',
       },
-      // products: [
-      //   {
-      //     productId,
-      //     quantity: parseInt(quantity, 10),
-      //   },
-      // ],
       products: cartItems.map(item => ({
         productId: item.productId,
         quantity: item.quantity,
       })),
       status: 'IN-CART',
-      orderId: 37,
     };
 
     try {
@@ -307,25 +357,19 @@ const Yarn = () => {
           },
         },
       );
-      console.log('Order Response:', response.data);
-      // setCartItems([
-      //   ...cartItems,
-      //   {productId, quantity: parseInt(quantity, 10)},
-      // ]);
-      setCartItems(prevItems => [...prevItems, newProduct]);
+
+      // Navigate to review screen with the cart items
+      navigation.navigate(ROUTES.ReviewScreen, {
+        cartItems: response.data,
+        token,
+        email,
+        cat: 'yarn',
+      });
     } catch (error) {
-      console.error('Error adding to cart:', error.response.data);
-     if(error.response.data.message === 'Your account is temporarily blocked. Please contact admin: +91 97551 11444.'){
-      Alert.alert('Your account is temporarily blocked', 'Please contact admin: +91 97551 11444.')
-     }
-     else(
-      Alert.alert(error.response.data.message)
-     )
+      console.error('Error during checkout:', error.response?.data);
+      Alert.alert('Error', 'Failed to place the order.');
     }
   };
-
-  // Extract the category from the first product (assuming all products have the same category)
-  const category = product.length > 0 ? product[0].category : '';
 
   return (
     <View style={styles.container}>
@@ -337,26 +381,12 @@ const Yarn = () => {
           />
         </TouchableOpacity>
         <Text style={styles.header}>Yarn</Text>
-        <TouchableOpacity
-  onPress={() => {
-    if (cartItems.length === 0) {
-      setOpenCheckoutModal(true);
-      return;
-    }
-    navigation.navigate(ROUTES.ReviewScreen, {
-      cartItems,
-      token,
-      email,
-      category,
-      cat: 'yarn'
-    });
-  }}
->
+        <TouchableOpacity onPress={handleCheckout}>
           <Image
             source={ICONS.cart}
             style={{tintColor: 'white', height: 24, width: 24}}
           />
-            {cartItems.length > 0 && (
+          {cartItems.length > 0 && (
             <View style={styles.notification}>
               <Text style={styles.notificationText}>{cartItems.length}</Text>
             </View>
@@ -371,58 +401,30 @@ const Yarn = () => {
             renderItem={({item}) => (
               <View style={styles.card}>
                 <View style={styles.imageContainer}>
-                  {/* <Text
-                    style={{
-                      color: 'black',
-                      fontWeight: 'bold',
-                      textAlign: 'justify',
-                    }}>
-                    {item.productId}
-                  </Text> */}
-                   <Text style={{ color: 'black', textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>Qty: {item.quantity}</Text>
-                  <Image source={{uri:item.imageUrl}} style={styles.productImage} />
-                  {/* <View style={styles.discountBox}>
-                    <Text style={styles.discount}>30% OFF</Text>
-                  </View> */}
+                  <Image source={{uri: item.imageUrl}} style={styles.productImage} />
+                  <Text style={{ color: 'black', textAlign: 'center', marginBottom: 5, fontWeight: 'bold' }}>
+                    Qty: {item.quantity}
+                  </Text>
                 </View>
                 <View style={styles.productInfo}>
                   <Text style={styles.productName}>{item.productName}</Text>
                   <View style={styles.inputContainer}>
                     <TextInput
-                      placeholder="m"
+                      placeholder="Enter quantity"
                       placeholderTextColor={'gray'}
                       style={styles.input}
                       keyboardType="numeric"
                       value={quantities[item.productId] || ''}
-                      onChangeText={text =>
-                        setQuantities({...quantities, [item.productId]: text})
-                      }
+                      onChangeText={text => setQuantities({...quantities, [item.productId]: text})}
                     />
                   </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
-                    <Text style={styles.price}>
-                      Rs. {item.gstPriceForBuyer}/m
-                    </Text>
-                 
-                  </View>
+                  <Text style={styles.price}>Rs. {item.gstPriceForBuyer}/m</Text>
                 </View>
-                <View style={styles.buttonContainer}>
-              {/* <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => handleAddToCart(item.productId)}>
-                <Text style={styles.addButtonText}>EDIT</Text>
-              </TouchableOpacity> */}
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => handleAddToCart(item.productId)}>
-                <Text style={styles.addButtonText}>ADD</Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => handleAddToCart(item.productId)}>
+                  <Text style={styles.addButtonText}>ADD</Text>
+                </TouchableOpacity>
               </View>
             )}
             keyExtractor={item => item._id}
@@ -433,28 +435,23 @@ const Yarn = () => {
         animationType="slide"
         transparent={true}
         visible={openCheckoutModal}
-        onRequestClose={() => {
-          setOpenCheckoutModal(!openCheckoutModal);
-        }}>
+        onRequestClose={() => setOpenCheckoutModal(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalMessage}>
               Please Add the Product
             </Text>
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => setOpenCheckoutModal(false)}>
-                <Text style={styles.modalButtonText}>Ok</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setOpenCheckoutModal(false)}>
+              <Text style={styles.modalButtonText}>Ok</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

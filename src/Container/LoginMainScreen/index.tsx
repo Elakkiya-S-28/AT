@@ -86,13 +86,31 @@ const LoginMainScreen = () => {
       if (response.data.message === 'User logged in successfully') {
         await AsyncStorage.setItem('token', response.data.token);
         await AsyncStorage.setItem('email', email);
-        navigation.navigate(ROUTES.MainTab, {
-          screen: ROUTES.MainScreen,
-          params: {
-            token: response.data.token,
-            email: email,
-          },
-        });
+        await AsyncStorage.setItem('cat',response.data.userPreference)
+        // navigation.navigate(ROUTES.MainTab, {
+        //   screen: ROUTES.MainScreen,
+        //   params: {
+        //     token: response.data.token,
+        //     email: email,
+        //   },
+        // });
+        if(response.data.userPreference === 'fabric'){
+          navigation.navigate(ROUTES.Fabric,{
+            token:response.data.token,
+            email:email,
+               user:'fabric'
+          })
+        }
+        else if(response.data.userPreference === 'yarn'){
+          navigation.navigate(ROUTES.Yarn,{
+            token:response.data.token,
+            email:email,
+         user:'yarn'
+          })
+        }
+        else{
+          return null;
+        }
       } else {
         setAlertMessage('Login failed. Please try again.');
         setAlertVisible(true);
