@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Modal,
+  Alert,
 } from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import CustomTextInput from '../../Component/CustomTextInput';
@@ -96,6 +97,7 @@ const SignUp = () => {
         'Signup Error:',
         error.response ? error.response.data : error.message,
       );
+      Alert.alert(error.response.data)
     }
   };
 

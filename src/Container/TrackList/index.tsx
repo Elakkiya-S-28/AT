@@ -79,9 +79,10 @@ const TrackListScreen = () => {
     </TouchableOpacity>
   );
 
+  
   return (
     <View style={styles.container}>
-      <SettingsHeader title={'Your Orders'} />
+      <SettingsHeader title={'Your Orders'} onPress={() => {navigation.navigate(ROUTES.LoginMainScreen)}} />
       {loading ? (
         <View style={{ alignSelf: 'center', justifyContent: 'center', flex: 1 }}>
           <ActivityIndicator size="large" color={COLORS.DarkBlue} />

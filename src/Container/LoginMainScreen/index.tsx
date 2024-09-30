@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 import CustomButton from '../../Component/CustomButton';
 import CustomTextInput from '../../Component/CustomTextInput';
-import { useNavigation, useFocusEffect } from '@react-navigation/core';
-import { ROUTES } from '../../Routes';
+import {useNavigation, useFocusEffect} from '@react-navigation/core';
+import {ROUTES} from '../../Routes';
 import ICONS from '../../Images/Icon';
 import axios from 'axios';
 import IMAGES from '../../Images/Image';
-import { API_URL } from '../../config/API';
-import { COLORS } from '../../config/COLORS';
+import {API_URL} from '../../config/API';
+import {COLORS} from '../../config/COLORS';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginMainScreen = () => {
@@ -44,13 +44,14 @@ const LoginMainScreen = () => {
       setPassword('');
       setEmailError('');
       setPasswordError('');
-    }, [])
+    }, []),
   );
 
   // Handle login
   const handleLogin = async () => {
     let isValid = true;
 
+    // Validate email
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       isValid = false;
@@ -58,9 +59,12 @@ const LoginMainScreen = () => {
       setEmailError('');
     }
 
+    // Trim password and validate
     const trimmedPassword = password.trim();
     if (password !== trimmedPassword) {
-      setPasswordError('Password should not contain leading or trailing spaces');
+      setPasswordError(
+        'Password should not contain leading or trailing spaces',
+      );
       isValid = false;
     } else if (password === '') {
       setPasswordError('Password cannot be empty');
@@ -69,58 +73,56 @@ const LoginMainScreen = () => {
       setPasswordError('');
     }
 
+    // If validation fails, show alert
     if (!isValid) {
       setAlertMessage('Please Enter the fields correctly.');
       setAlertVisible(true);
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true); // Start loading spinner
+
     try {
+      // Perform the login API call
       const response = await axios.post(`${API_URL}/user/login`, {
         email,
         password: trimmedPassword,
         role: 'BUYER',
       });
+
       console.log('Login response:', response.data);
+
+      // If login is successful
       if (response.data.message === 'User logged in successfully') {
         await AsyncStorage.setItem('token', response.data.token);
         await AsyncStorage.setItem('email', email);
-        await AsyncStorage.setItem('cat',response.data.userPreference)
-        // navigation.navigate(ROUTES.MainTab, {
-        //   screen: ROUTES.MainScreen,
-        //   params: {
-        //     token: response.data.token,
-        //     email: email,
-        //   },
-        // });
-        if(response.data.userPreference === 'fabric'){
-          navigation.navigate(ROUTES.Fabric,{
-            token:response.data.token,
-            email:email,
-               user:'fabric'
-          })
-        }
-        else if(response.data.userPreference === 'yarn'){
-          navigation.navigate(ROUTES.Yarn,{
-            token:response.data.token,
-            email:email,
-         user:'yarn'
-          })
-        }
-        else{
+        await AsyncStorage.setItem('cat', response.data.userPreference);
+
+        // Navigate based on user preference
+        if (response.data.userPreference === 'fabric') {
+          navigation.navigate(ROUTES.Fabric, {
+            token: response.data.token,
+            email: email,
+            user: 'fabric',
+          });
+        } else if (response.data.userPreference === 'yarn') {
+          navigation.navigate(ROUTES.Yarn, {
+            token: response.data.token,
+            email: email,
+            user: 'yarn',
+          });
+        } else {
           return null;
         }
-      } else {
-        setAlertMessage('Login failed. Please try again.');
-        setAlertVisible(true);
       }
     } catch (error) {
       console.error('Login error:', error.response);
-      setAlertMessage('Please log in later');
+
+      // Show error alert to the user
+      setAlertMessage('Login failed. Please try again later.');
       setAlertVisible(true);
     } finally {
-      setLoading(false); // End loading
+      setLoading(false); // Stop loading spinner
     }
   };
 
@@ -131,18 +133,18 @@ const LoginMainScreen = () => {
       resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.container}>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{flexDirection: 'row'}}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Image
               source={ICONS.left}
-              style={{ height: 24, width: 24, tintColor: 'white' }}
+              style={{height: 24, width: 24, tintColor: 'white'}}
             />
           </TouchableOpacity>
           <Text style={styles.backText}>Back</Text>
         </View>
 
-        <View style={{ marginTop: 150 }}>
-          <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Email ID</Text>
+        <View style={{marginTop: 150}}>
+          <Text style={{fontWeight: 'bold', fontSize: 15}}>Email ID</Text>
           <CustomTextInput
             placeholder="Email id"
             keyboardType="email-address"
@@ -155,7 +157,7 @@ const LoginMainScreen = () => {
             validate={emailError !== ''}
             validationMessage={emailError}
           />
-          <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Password</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 15}}>Password</Text>
           <CustomTextInput
             placeholder="Password"
             keyboardType="default"
